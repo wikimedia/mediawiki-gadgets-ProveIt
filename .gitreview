@@ -1,6 +1,6 @@
 [gerrit]
 host=gerrit.wikimedia.org
 port=29418
-project=wikipedia/gadgets/ProveIt.git
-defaultbranch=master
+project=mediawiki/gadgets/ProveIt.git
+track=1
 defaultrebase=0
