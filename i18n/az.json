@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"AZISS",
 			"Cekli829",
 			"NMW03",
 			"Neriman2003",
@@ -8,6 +9,7 @@
 			"Şeyx Şamil"
 		]
 	},
+	"proveit-add-bibliography-button": "Biblioqrafiya əlavə edin",
 	"proveit-add-reference-button": "İstinad əlavə et",
 	"proveit-back-button": "Geri",
 	"proveit-cite-button": "Sitat ver",
@@ -23,11 +25,14 @@
 	"proveit-insert-button": "Yerləşdir",
 	"proveit-no-references": "İstinadlar tapılmadı",
 	"proveit-no-template": "Şablon yoxdur",
+	"proveit-no-template-data": "Şablon məlumatları tapılmadı",
 	"proveit-normalize-button": "Hər şeyi normallaşdır",
+	"proveit-normalize-message": "Normallaşdırma... bu bir neçə saniyə, hətta dəqiqələrdə çəkə bilər!",
 	"proveit-reference-content-label": "İstinad məzmunu",
 	"proveit-reference-group-label": "İstinad qrupu",
 	"proveit-reference-name-label": "İstinad adı",
 	"proveit-reference-template-label": "Şablon",
+	"proveit-reference-wikitext-label": "İstinad vikimətn",
 	"proveit-remove-button": "Çıxar",
 	"proveit-show-all-button": "Bütün süzgəcləri göstər",
 	"proveit-today-button": "Bu gün",
