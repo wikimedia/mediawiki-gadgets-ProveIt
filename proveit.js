@@ -1,10 +1,10 @@
 /**
- * ProveIt is a reference manager for Wikipedia (and any other MediaWiki wiki)
- * Documentation at https://www.mediawiki.org/wiki/ProveIt
+ * ProveIt is a smart and simple reference manager for Wikipedia (and any other MediaWiki wiki)
+ * Documentation at https://commons.wikimedia.org/wiki/Help:Gadget-ProveIt
  *
  * Copyright 2008-2011 Georgia Tech Research Corporation, Atlanta, GA 30332-0415, ALL RIGHTS RESERVED
  * Copyright 2011- Matthew Flaschen
- * Rewritten, internationalized, improved and maintained by Felipe Schenone (User:Sophivorus) since 2014
+ * Rewritten, internationalized, improved and maintained by Sophivorus since 2014
  *
  * ProveIt is available under the GNU Free Documentation License (http://www.gnu.org/copyleft/fdl.html),
  * the Creative Commons Attribution/Share-Alike License 3.0 (http://creativecommons.org/licenses/by-sa/3.0/)
@@ -14,7 +14,7 @@ window.ProveIt = {
 
 	/**
 	 * Template data of the templates
-	 * Populated from ProveIt.realInit()
+	 * Populated on ProveIt.realInit()
 	 *
 	 * @type {Object} Map from template name to template data
 	 */
@@ -33,7 +33,7 @@ window.ProveIt = {
 
 	/**
 	 * Convenience method to get a ProveIt interface message
-	 * Interface messages are set from ProveIt.init()
+	 * Interface messages are set on ProveIt.init()
 	 *
 	 * @param {string} key Message key without the "proveit-" prefix
 	 * @return {string} Message value
@@ -53,13 +53,13 @@ window.ProveIt = {
 			if ( ve.init.target.getSurface().getMode() === 'source' ) {
 				return '2017'; // 2017 wikitext editor
 			}
-			return; // Visual editor (not supported)
+			return; // Visual editor
 		}
 		var action = mw.config.get( 'wgAction' );
 		if ( action === 'edit' || action === 'submit' ) {
 			if ( mw.user.options.get( 'usebetatoolbar' ) === 1 ) {
 				if ( $( '.CodeMirror' ).length ) {
-					return 'codemirror'; // CodeMirror
+					return 'codemirror';
 				}
 				return 'wikieditor'; // WikiEditor
 			}
@@ -102,9 +102,6 @@ window.ProveIt = {
 			return;
 		}
 
-		// Load the CSS
-		ProveIt.loadCSS();
-
 		// Add the basic GUI
 		ProveIt.buildGUI();
 
@@ -121,17 +118,6 @@ window.ProveIt = {
 				ProveIt.addTag();
 			}
 		}
-	},
-
-	/**
-	 * Load CSS directly from Wikimedia repository and add it to the DOM
-	 */
-	loadCSS: function () {
-		$.get( '//gerrit.wikimedia.org/r/plugins/gitiles/wikipedia/gadgets/ProveIt/+/master/proveit.css?format=text', function ( data ) {
-			var css = atob( data );
-			var $style = $( '<style>' ).html( css );
-			$( 'head' ).append( $style );
-		} );
 	},
 
 	/**
@@ -255,14 +241,14 @@ window.ProveIt = {
 				} );
 
 				// Get the latest English messages
-				$.get( '//gerrit.wikimedia.org/r/plugins/gitiles/wikipedia/gadgets/ProveIt/+/master/i18n/en.json?format=text', function ( data ) {
+				$.get( '//gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/gadgets/ProveIt/+/master/i18n/en.json?format=text', function ( data ) {
 
 					var englishMessages = JSON.parse( ProveIt.decodeBase64( data ) );
 					delete englishMessages[ '@metadata' ];
 
 					// Get the latest translations to the preferred user language
 					var userLanguage = mw.config.get( 'wgUserLanguage' );
-					$.get( '//gerrit.wikimedia.org/r/plugins/gitiles/wikipedia/gadgets/ProveIt/+/master/i18n/' + userLanguage + '.json?format=text' ).always( function ( data, status ) {
+					$.get( '//gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/gadgets/ProveIt/+/master/i18n/' + userLanguage + '.json?format=text' ).always( function ( data, status ) {
 
 						$( '#proveit-logo-text' ).text( 'ProveIt' ); // Finish loading
 
@@ -901,6 +887,7 @@ window.ProveIt = {
 		if ( !proveitSummary ) {
 			return; // No summary defined
 		}
+		proveitSummary += ' #proveit'; // For tracking via https://hashtags.wmcloud.org/
 		switch ( ProveIt.getEditor() ) {
 			case 'core':
 			case 'wikieditor':
@@ -1057,7 +1044,6 @@ window.ProveIt = {
 
 	/**
 	 * Helper function to decode base64 strings
-	 * See https://stackoverflow.com/questions/30106476
 	 *
 	 * @param {string} string Base64 encoded string
 	 * @return {string} Decoded string
@@ -1310,7 +1296,7 @@ window.ProveIt = {
 		 */
 		this.getSnippet = function () {
 			for ( var param in this.params ) {
-				if ( 'params' in this.data && param in this.data.params && this.data.params[ param ].required && this.data.params[ param ].type === 'string' ) {
+				if ( 'params' in this.data && param in this.data.params && this.data.params[ param ].required && ( this.data.params[ param ].type === 'string' || this.data.params[ param ].type === 'content' ) ) {
 					return this.params[ param ];
 				}
 			}
