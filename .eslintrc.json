@@ -6,7 +6,8 @@
 	],
 	"globals": {
 		"ProveIt": "writable",
-		"ve": "readonly"
+		"ve": "readonly",
+		"OO": "readonly"
 	},
 	"rules": {
 		"max-len": "off",

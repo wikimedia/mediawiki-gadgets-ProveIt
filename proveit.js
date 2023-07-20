@@ -653,11 +653,11 @@ window.ProveIt = {
 					}
 					var $button = $( this );
 					$button.text( mw.message( 'proveit-archive-fetching' ) ).prop( 'disabled', true );
-					$.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( url ) ).done( function( data ) {
+					$.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( url ) ).done( function ( data ) {
 						if ( data.archived_snapshots.closest ) {
 							var snapshot = data.archived_snapshots.closest;
 							var archive = snapshot.url.replace( /^http:\/\//, 'https://' );
-							OO.ui.alert( archive, { 'size': 'large', 'title': mw.message( 'proveit-archive-title' ).text() } );
+							OO.ui.alert( archive, { size: 'large', title: mw.message( 'proveit-archive-title' ).text() } );
 						} else {
 							OO.ui.alert( mw.message( 'proveit-archive-no-url' ).text() );
 						}
