@@ -647,9 +647,12 @@ window.ProveIt = {
 				$button = $( '<button>' ).text( mw.message( 'proveit-archive-button' ) );
 				$div.prepend( $button );
 				$button.on( 'click', $input, function ( event ) {
+					var url = event.data.val().trim();
+					if ( !url ) {
+						return;
+					}
 					var $button = $( this );
 					$button.text( mw.message( 'proveit-archive-fetching' ) ).prop( 'disabled', true );
-					var url = event.data.val();
 					$.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( url ) ).done( function( data ) {
 						if ( data.archived_snapshots.closest ) {
 							var snapshot = data.archived_snapshots.closest;
