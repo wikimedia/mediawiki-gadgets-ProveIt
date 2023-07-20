@@ -642,22 +642,26 @@ window.ProveIt = {
 					} );
 				} );
 			}
-
 			// If the parameter is of the URL type, add the Archive button
 			if ( paramData.type === 'url' ) {
 				$button = $( '<button>' ).text( mw.message( 'proveit-archive-button' ) );
 				$div.prepend( $button );
 				$button.on( 'click', $input, function ( event ) {
-					$.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( event.data.val() ) ).done( function( data ) {
+					var $button = $( this );
+					$button.text( mw.message( 'proveit-archive-fetching' ) ).prop( 'disabled', true );
+					var url = event.data.val();
+					$.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( url ) ).done( function( data ) {
 						if ( data.archived_snapshots.closest ) {
 							var snapshot = data.archived_snapshots.closest;
-							var url = snapshot.url.replace( /^http:\/\//, 'https://' );
-							OO.ui.alert( mw.message( 'proveit-archive-text', url ) );
+							var archive = snapshot.url.replace( /^http:\/\//, 'https://' );
+							OO.ui.alert( archive, { 'size': 'large', 'title': mw.message( 'proveit-archive-title' ).text() } );
 						} else {
-							OO.ui.alert( mw.message( 'proveit-archive-no-url' ) );
+							OO.ui.alert( mw.message( 'proveit-archive-no-url' ).text() );
 						}
 					} ).fail( function () {
-						OO.ui.alert( mw.message( 'proveit-archive-error' ) );
+						OO.ui.alert( mw.message( 'proveit-archive-error' ).text() );
+					} ).always( function () {
+						$button.text( mw.message( 'proveit-archive-button' ) ).prop( 'disabled', false );
 					} );
 				} );
 			}
