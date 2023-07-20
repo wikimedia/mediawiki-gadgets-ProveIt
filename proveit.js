@@ -21,62 +21,6 @@ window.ProveIt = {
 	templateData: {},
 
 	/**
-	 * Convenience method to get a ProveIt configuration option
-	 * Configuration options are set from the loader of the wiki, not here
-	 *
-	 * @param {string} key Option key without the "proveit-" prefix
-	 * @return {string} Option value
-	 */
-	getOption: function ( key ) {
-		return mw.config.get( 'proveit-' + key );
-	},
-
-	/**
-	 * Convenience method to get a ProveIt interface message
-	 * Interface messages are set on ProveIt.init()
-	 *
-	 * @param {string} key Message key without the "proveit-" prefix
-	 * @return {string} Message value
-	 */
-	getMessage: function ( key ) {
-		// eslint-disable-next-line mediawiki/msg-doc
-		return mw.message( 'proveit-' + key );
-	},
-
-	/**
-	 * Convenience method to detect the current editor
-	 *
-	 * @return {string|null} Name of the current editor ('core', 'wikieditor', 'codemirror' or '2017') or null if it's not supported
-	 */
-	getEditor: function () {
-		if ( window.ve && ve.init && ve.init.target && ve.init.target.active ) {
-			if ( ve.init.target.getSurface().getMode() === 'source' ) {
-				return '2017'; // 2017 wikitext editor
-			}
-			return; // Visual editor
-		}
-		var action = mw.config.get( 'wgAction' );
-		if ( action === 'edit' || action === 'submit' ) {
-			if ( mw.user.options.get( 'usebetatoolbar' ) === 1 ) {
-				if ( $( '.CodeMirror' ).length ) {
-					return 'codemirror';
-				}
-				return 'wikieditor'; // WikiEditor
-			}
-			return 'core'; // Core editor
-		}
-	},
-
-	/**
-	 * Convenience method to get the wikitext of the current page
-	 *
-	 * @return {string} Wikitext of the current page
-	 */
-	getWikitext: function () {
-		return $( '#wpTextbox1' ).textSelection( 'getContents' );
-	},
-
-	/**
 	 * Initialization script
 	 */
 	init: function () {
@@ -92,13 +36,13 @@ window.ProveIt = {
 
 		// Only continue on supported namespaces
 		var namespace = mw.config.get( 'wgNamespaceNumber' ),
-			namespaces = ProveIt.getOption( 'namespaces' );
+			namespaces = mw.config.get( 'proveit-namespaces' );
 		if ( namespaces && namespaces.indexOf( namespace ) === -1 ) {
 			return;
 		}
 
-		// Only continue on supported editors
-		if ( !ProveIt.getEditor() ) {
+		// Only continue on wikitext editors
+		if ( ProveIt.getEditor() === 'visualeditor' ) {
 			return;
 		}
 
@@ -113,7 +57,7 @@ window.ProveIt = {
 		// When previewing, re-add the ProveIt tag (T154357)
 		if ( mw.config.get( 'wgAction' ) === 'submit' ) {
 			var currentSummary = $( '#wpSummary' ).val(),
-				proveitSummary = ProveIt.getOption( 'summary' );
+				proveitSummary = mw.config.get( 'proveit-summary' );
 			if ( proveitSummary && currentSummary.indexOf( proveitSummary ) > -1 ) {
 				ProveIt.addTag();
 			}
@@ -179,7 +123,7 @@ window.ProveIt = {
 		$( '#proveit-logo-text' ).text( '.' ); // Start loading
 
 		// Get the list of template names and prepend the namespace
-		var templates = ProveIt.getOption( 'templates' ) ? ProveIt.getOption( 'templates' ) : [],
+		var templates = mw.config.get( 'proveit-templates' ) ? mw.config.get( 'proveit-templates' ) : [],
 			formattedNamespaces = mw.config.get( 'wgFormattedNamespaces' ),
 			templateNamespace = formattedNamespaces[ 10 ],
 			titles = [];
@@ -357,7 +301,7 @@ window.ProveIt = {
 			// Add the list to the GUI and make sure we're at the top
 			$( '#proveit-body' ).html( $list ).scrollTop( 0 );
 		} else {
-			var $div = $( '<div>' ).attr( 'id', 'proveit-no-references-message' ).text( ProveIt.getMessage( 'no-references' ) );
+			var $div = $( '<div>' ).attr( 'id', 'proveit-no-references-message' ).text( mw.message( 'proveit-no-references' ) );
 			$( '#proveit-body' ).html( $div );
 		}
 
@@ -365,11 +309,11 @@ window.ProveIt = {
 		var $footer = $( '#proveit-footer' );
 		$footer.empty();
 		if ( references.length || templates.length ) {
-			var $normalizeButton = $( '<button>' ).attr( 'id', 'proveit-normalize-button' ).text( ProveIt.getMessage( 'normalize-button' ) );
+			var $normalizeButton = $( '<button>' ).attr( 'id', 'proveit-normalize-button' ).text( mw.message( 'proveit-normalize-button' ) );
 			$footer.append( $normalizeButton );
 			$normalizeButton.on( 'click', function () {
 				$( this ).remove();
-				mw.notify( ProveIt.getMessage( 'normalize-message' ) );
+				mw.notify( mw.message( 'proveit-normalize-message' ) );
 				setTimeout( function () {
 					references.forEach( function ( reference ) {
 						ProveIt.buildForm( reference ); // There's no current way to avoid going through the interface, but the user doesn't notice
@@ -382,7 +326,7 @@ window.ProveIt = {
 					ProveIt.buildList();
 				}, 100 );
 			} );
-			var $filterReferences = $( '<input>' ).attr( 'placeholder', ProveIt.getMessage( 'filter-references' ) );
+			var $filterReferences = $( '<input>' ).attr( 'placeholder', mw.message( 'proveit-filter-references' ) );
 			$footer.prepend( $filterReferences );
 			$filterReferences.on( 'keyup', function () {
 				var filter = $( this ).val().toLowerCase();
@@ -394,8 +338,8 @@ window.ProveIt = {
 
 		// Build the header
 		var $header = $( '#proveit-header' ),
-			$addReferenceButton = $( '<button>' ).text( ProveIt.getMessage( 'add-reference-button' ) ).addClass( 'progressive' ),
-			$addBibliographyButton = $( '<button>' ).text( ProveIt.getMessage( 'add-bibliography-button' ) );
+			$addReferenceButton = $( '<button>' ).text( mw.message( 'proveit-add-reference-button' ) ).addClass( 'progressive' ),
+			$addBibliographyButton = $( '<button>' ).text( mw.message( 'proveit-add-bibliography-button' ) );
 		$( 'button', $header ).remove();
 		$header.prepend( $addReferenceButton, $addBibliographyButton );
 
@@ -427,16 +371,16 @@ window.ProveIt = {
 
 		// Build the header
 		var $header = $( '#proveit-header' ),
-			$backButton = $( '<button>' ).text( ProveIt.getMessage( 'back-button' ) );
+			$backButton = $( '<button>' ).text( mw.message( 'proveit-back-button' ) );
 		$( 'button', $header ).remove();
 		$header.prepend( $backButton );
 		$backButton.on( 'click', ProveIt.buildList );
 
 		// Build the footer
 		var $footer = $( '#proveit-footer' ),
-			$insertButton = $( '<button>' ).attr( 'id', 'proveit-insert-button' ).text( ProveIt.getMessage( 'insert-button' ) ).on( 'click', object, ProveIt.insert ).addClass( 'progressive' ),
-			$updateButton = $( '<button>' ).attr( 'id', 'proveit-update-button' ).text( ProveIt.getMessage( 'update-button' ) ).on( 'click', object, ProveIt.update ).addClass( 'progressive' ),
-			$removeButton = $( '<button>' ).attr( 'id', 'proveit-remove-button' ).text( ProveIt.getMessage( 'remove-button' ) ).on( 'click', object, ProveIt.remove );
+			$insertButton = $( '<button>' ).attr( 'id', 'proveit-insert-button' ).text( mw.message( 'proveit-insert-button' ) ).on( 'click', object, ProveIt.insert ).addClass( 'progressive' ),
+			$updateButton = $( '<button>' ).attr( 'id', 'proveit-update-button' ).text( mw.message( 'proveit-update-button' ) ).on( 'click', object, ProveIt.update ).addClass( 'progressive' ),
+			$removeButton = $( '<button>' ).attr( 'id', 'proveit-remove-button' ).text( mw.message( 'proveit-remove-button' ) ).on( 'click', object, ProveIt.remove );
 		$footer.empty();
 
 		// Add the Insert button or the Remove and Update buttons
@@ -465,19 +409,19 @@ window.ProveIt = {
 			$label, $input, $div;
 
 		// Add the reference name field
-		$label = $( '<label>' ).text( ProveIt.getMessage( 'reference-name-label' ) );
+		$label = $( '<label>' ).text( mw.message( 'proveit-reference-name-label' ) );
 		$input = $( '<input>' ).attr( 'id', 'proveit-reference-name' ).val( reference.name );
 		$div = $( '<div>' ).append( $label, $input );
 		$fields.append( $div );
 
 		// Add the reference group field
-		$label = $( '<label>' ).text( ProveIt.getMessage( 'reference-group-label' ) );
+		$label = $( '<label>' ).text( mw.message( 'proveit-reference-group-label' ) );
 		$input = $( '<input>' ).attr( 'id', 'proveit-reference-group' ).val( reference.group );
 		$div = $( '<div>' ).append( $label, $input );
 		$fields.append( $div );
 
 		// Add the reference content field
-		$label = $( '<label>' ).text( ProveIt.getMessage( 'reference-content-label' ) );
+		$label = $( '<label>' ).text( mw.message( 'proveit-reference-content-label' ) );
 		$input = $( '<textarea>' ).attr( 'id', 'proveit-reference-content' ).val( reference.content );
 		$div = $( '<div>' ).append( $label, $input );
 		$fields.append( $div );
@@ -495,7 +439,7 @@ window.ProveIt = {
 
 		// Add the footer buttons
 		var $buttons = $( '<span>' ).attr( 'id', 'proveit-reference-buttons' ),
-			$citeButton = $( '<button>' ).attr( 'id', 'proveit-cite-button' ).text( ProveIt.getMessage( 'cite-button' ) ).on( 'click', reference, reference.cite );
+			$citeButton = $( '<button>' ).attr( 'id', 'proveit-cite-button' ).text( mw.message( 'proveit-cite-button' ) ).on( 'click', reference, reference.cite );
 		$buttons.append( $citeButton );
 		$( '#proveit-reference-buttons' ).remove();
 		$( '#proveit-footer' ).prepend( $buttons );
@@ -511,13 +455,13 @@ window.ProveIt = {
 			$label, $input, $option, $button, $div;
 
 		// Add the template select menu
-		$label = $( '<label>' ).text( ProveIt.getMessage( 'reference-template-label' ) );
+		$label = $( '<label>' ).text( mw.message( 'proveit-reference-template-label' ) );
 		$input = $( '<select>' ).attr( 'id', 'proveit-template-select' );
 		$div = $( '<div>' ).append( $label, $input );
 		$fields.append( $div );
 
 		// Add the empty option
-		$option = $( '<option>' ).text( ProveIt.getMessage( 'no-template' ) ).val( '' );
+		$option = $( '<option>' ).text( mw.message( 'proveit-no-template' ) ).val( '' );
 		$input.append( $option );
 
 		// Add an option for each template
@@ -547,9 +491,9 @@ window.ProveIt = {
 		if ( 'maps' in template.data && 'citoid' in template.data.maps ) {
 
 			// Add the Citoid field
-			$button = $( '<button>' ).text( ProveIt.getMessage( 'citoid-load' ) );
-			$label = $( '<label>' ).text( ProveIt.getMessage( 'citoid-label' ) ).attr( 'data-tooltip', ProveIt.getMessage( 'citoid-tooltip' ) );
-			$input = $( '<input>' ).attr( 'placeholder', ProveIt.getMessage( 'citoid-placeholder' ) );
+			$button = $( '<button>' ).text( mw.message( 'proveit-citoid-load' ) );
+			$label = $( '<label>' ).text( mw.message( 'proveit-citoid-label' ) ).attr( 'data-tooltip', mw.message( 'proveit-citoid-tooltip' ) );
+			$input = $( '<input>' ).attr( 'placeholder', mw.message( 'proveit-citoid-placeholder' ) );
 			$div = $( '<div>' ).append( $button, $label, $input );
 			$fields.append( $div );
 
@@ -564,7 +508,7 @@ window.ProveIt = {
 				}
 
 				// Show the loading message
-				$button.text( ProveIt.getMessage( 'citoid-loading' ) ).prop( 'disabled', true );
+				$button.text( mw.message( 'proveit-citoid-loading' ) ).prop( 'disabled', true );
 
 				// Get the data
 				var contentLanguage = mw.config.get( 'wgContentLanguage' );
@@ -592,7 +536,7 @@ window.ProveIt = {
 					}
 
 					// Reset the button
-					$button.text( ProveIt.getMessage( 'citoid-load' ) ).prop( 'disabled', false );
+					$button.text( mw.message( 'proveit-citoid-load' ) ).prop( 'disabled', false );
 
 					// Update the reference content too
 					if ( $( '#proveit-reference-content' ).length ) {
@@ -604,9 +548,9 @@ window.ProveIt = {
 
 				// @todo For some reason this isn't firing
 				} ).fail( function () {
-					$button.text( ProveIt.getMessage( 'citoid-error' ) );
+					$button.text( mw.message( 'proveit-citoid-error' ) );
 					setTimeout( function () {
-						$button.text( ProveIt.getMessage( 'citoid-load' ) ).prop( 'disabled', false );
+						$button.text( mw.message( 'proveit-citoid-load' ) ).prop( 'disabled', false );
 					}, 3000 );
 				} );
 			} );
@@ -699,9 +643,28 @@ window.ProveIt = {
 				} );
 			}
 
+			// If the parameter is of the URL type, add the Archive button
+			if ( paramData.type === 'url' ) {
+				$button = $( '<button>' ).text( mw.message( 'proveit-archive-button' ) );
+				$div.prepend( $button );
+				$button.on( 'click', $input, function ( event ) {
+					$.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( event.data.val() ) ).done( function( data ) {
+						if ( data.archived_snapshots.closest ) {
+							var snapshot = data.archived_snapshots.closest;
+							var url = snapshot.url.replace( /^http:\/\//, 'https://' );
+							OO.ui.alert( mw.message( 'proveit-archive-text', url ) );
+						} else {
+							OO.ui.alert( mw.message( 'proveit-archive-no-url' ) );
+						}
+					} ).fail( function () {
+						OO.ui.alert( mw.message( 'proveit-archive-error' ) );
+					} );
+				} );
+			}
+
 			// If the parameter is of the date type, add the Today button
 			if ( paramData.type === 'date' ) {
-				$button = $( '<button>' ).text( ProveIt.getMessage( 'today-button' ) );
+				$button = $( '<button>' ).text( mw.message( 'proveit-today-button' ) );
 				$div.prepend( $button );
 				$button.on( 'click', $input, function ( event ) {
 					var input = event.data,
@@ -735,7 +698,7 @@ window.ProveIt = {
 
 		// Some reference templates may have no template data
 		if ( !template.data || 'notemplatedata' in template.data ) {
-			$div = $( '<div>' ).attr( 'id', 'proveit-no-template-data-message' ).text( ProveIt.getMessage( 'no-template-data' ) );
+			$div = $( '<div>' ).attr( 'id', 'proveit-no-template-data-message' ).text( mw.message( 'proveit-no-template-data' ) );
 			$fields.append( $div );
 		}
 
@@ -745,8 +708,8 @@ window.ProveIt = {
 
 		// Add the footer buttons
 		var $buttons = $( '<span>' ).attr( 'id', 'proveit-template-buttons' ),
-			$filterFields = $( '<input>' ).attr( 'placeholder', ProveIt.getMessage( 'filter-fields' ) ),
-			$showAllButton = $( '<button>' ).attr( 'id', 'proveit-show-all-button' ).text( ProveIt.getMessage( 'show-all-button' ) );
+			$filterFields = $( '<input>' ).attr( 'placeholder', mw.message( 'proveit-filter-fields' ) ),
+			$showAllButton = $( '<button>' ).attr( 'id', 'proveit-show-all-button' ).text( mw.message( 'proveit-show-all-button' ) );
 		if ( template.paramOrder.length ) {
 			$buttons.append( $filterFields );
 		}
@@ -845,7 +808,7 @@ window.ProveIt = {
 	 * Add the ProveIt revision tag
 	 */
 	addTag: function () {
-		var tag = ProveIt.getOption( 'tag' );
+		var tag = mw.config.get( 'proveit-tag' );
 		if ( !tag ) {
 			return; // No tag defined
 		}
@@ -883,7 +846,7 @@ window.ProveIt = {
 	 * Add the ProveIt edit summary
 	 */
 	addSummary: function () {
-		var proveitSummary = ProveIt.getOption( 'summary' );
+		var proveitSummary = mw.config.get( 'proveit-summary' );
 		if ( !proveitSummary ) {
 			return; // No summary defined
 		}
@@ -980,7 +943,7 @@ window.ProveIt = {
 		}
 
 		// If the object is a reference, remove the citations too
-		if ( object instanceof ProveIt.Reference && object.citations.length && confirm( ProveIt.getMessage( 'confirm-remove' ) ) ) {
+		if ( object instanceof ProveIt.Reference && object.citations.length && confirm( mw.message( 'proveit-confirm-remove' ) ) ) {
 			object.citations.forEach( function ( citation ) {
 				ProveIt.remove( citation );
 			} );
@@ -1543,6 +1506,39 @@ window.ProveIt = {
 		this.template = this.getTemplate();
 		this.snippet = this.getSnippet();
 		this.citations = this.getCitations();
+	},
+
+	/**
+	 * Convenience method to detect the current editor
+	 *
+	 * @return {string|null} Name of the current editor ('core', 'wikieditor', 'codemirror' or '2017') or null if it's not supported
+	 */
+	getEditor: function () {
+		if ( window.ve && ve.init && ve.init.target && ve.init.target.active ) {
+			if ( ve.init.target.getSurface().getMode() === 'source' ) {
+				return '2017'; // 2017 wikitext editor
+			}
+			return 'visualeditor'; // Visual editor
+		}
+		var action = mw.config.get( 'wgAction' );
+		if ( action === 'edit' || action === 'submit' ) {
+			if ( mw.user.options.get( 'usebetatoolbar' ) === 1 ) {
+				if ( $( '.CodeMirror' ).length ) {
+					return 'codemirror'; // CodeMirror
+				}
+				return 'wikieditor'; // WikiEditor
+			}
+			return 'core'; // Core editor
+		}
+	},
+
+	/**
+	 * Convenience method to get the wikitext of the current page
+	 *
+	 * @return {string} Wikitext of the current page
+	 */
+	getWikitext: function () {
+		return $( '#wpTextbox1' ).textSelection( 'getContents' );
 	}
 };
 

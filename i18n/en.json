@@ -30,6 +30,10 @@
     "proveit-reference-wikitext-label": "Reference wikitext",
     "proveit-remove-button": "Remove",
     "proveit-show-all-button": "Show all fields",
+    "proveit-archive-button": "Get archived URL",
+    "proveit-archive-text": "The latest archived URL is:\n\n$1\n\nCopy it and use it where appropriate.",
+    "proveit-archive-no-url": "No archived URL was found",
+    "proveit-archive-error": "Error accessing Wayback Machine API",
     "proveit-today-button": "Today",
     "proveit-update-button": "Update"
 }
