@@ -36,6 +36,11 @@
 	"proveit-reference-wikitext-label": "Wikitesto della nota",
 	"proveit-remove-button": "Rimuovi",
 	"proveit-show-all-button": "Mostra tutti i campi",
+	"proveit-archive-button": "Archivio",
+	"proveit-archive-fetching": "Recupero...",
+	"proveit-archive-title": "URL archiviato",
+	"proveit-archive-no-url": "Non è stato trovato alcun URL archiviato",
+	"proveit-archive-error": "Errore durante l'accesso all'API Wayback Machine",
 	"proveit-today-button": "Oggi",
 	"proveit-update-button": "Aggiorna"
 }

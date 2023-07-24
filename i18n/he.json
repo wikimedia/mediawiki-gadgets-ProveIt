@@ -32,6 +32,11 @@
 	"proveit-reference-wikitext-label": "ויקיציטוט להפניה",
 	"proveit-remove-button": "הסרה",
 	"proveit-show-all-button": "הצגת כל השדות",
+	"proveit-archive-button": "ארכיון",
+	"proveit-archive-fetching": "מתבצע אחזור...",
+	"proveit-archive-title": "כתובת מאורכבת",
+	"proveit-archive-no-url": "לא נמצאה כתובת מאורכבת",
+	"proveit-archive-error": "שגיאה בגישה ל־API של Wayback Machine",
 	"proveit-today-button": "היום",
 	"proveit-update-button": "עדכון"
 }

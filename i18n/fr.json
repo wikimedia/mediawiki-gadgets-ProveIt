@@ -36,6 +36,11 @@
 	"proveit-reference-wikitext-label": "Wikicode de la référence",
 	"proveit-remove-button": "Retirer",
 	"proveit-show-all-button": "Afficher tous les champs",
+	"proveit-archive-button": "Archive",
+	"proveit-archive-fetching": "Récupération…",
+	"proveit-archive-title": "URL archivé",
+	"proveit-archive-no-url": "Aucun URL archivé n’a été trouvé",
+	"proveit-archive-error": "Erreur d’accès à l’API de la machine Wayback",
 	"proveit-today-button": "Aujourd’hui",
 	"proveit-update-button": "Mettre à jour"
 }

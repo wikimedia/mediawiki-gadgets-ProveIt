@@ -30,6 +30,11 @@
 	"proveit-reference-wikitext-label": "Wikitexto del referentia",
 	"proveit-remove-button": "Remover",
 	"proveit-show-all-button": "Monstrar tote le campos",
+	"proveit-archive-button": "Archivo",
+	"proveit-archive-fetching": "Obtention…",
+	"proveit-archive-title": "URL archivate",
+	"proveit-archive-no-url": "Necun URL archivate ha essite trovate",
+	"proveit-archive-error": "Error de accesso al API de Wayback Machine",
 	"proveit-today-button": "Hodie",
 	"proveit-update-button": "Actualisar"
 }

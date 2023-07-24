@@ -33,6 +33,11 @@
 	"proveit-reference-wikitext-label": "參考資料 wikitext",
 	"proveit-remove-button": "移除",
 	"proveit-show-all-button": "顯示所有欄位",
+	"proveit-archive-button": "存檔",
+	"proveit-archive-fetching": "正在取得…",
+	"proveit-archive-title": "存檔 URL",
+	"proveit-archive-no-url": "未找到存檔 URL",
+	"proveit-archive-error": "存取 Wayback Machine API 時發生出錯",
 	"proveit-today-button": "今日",
 	"proveit-update-button": "更新"
 }

@@ -14,7 +14,7 @@
 	"proveit-citoid-load": "Cargar",
 	"proveit-citoid-loading": "Cargando...",
 	"proveit-citoid-placeholder": "URL, DOI, ISBN ou PMC/PMID",
-	"proveit-citoid-tooltip": "Indique unha URL, DOI, ISBN ou PMC/PMID para intentar extraer os detalles automaticamente a través do servizo Citoid",
+	"proveit-citoid-tooltip": "Indique un URL, DOI, ISBN ou PMC/PMID para intentar extraer os detalles automaticamente a través do servizo Citoid",
 	"proveit-confirm-remove": "Isto tamén borrará todas as citas á referencia. Quere continuar?",
 	"proveit-filter-fields": "Campos do filtro",
 	"proveit-filter-references": "Filtrar as referencias",
@@ -31,6 +31,11 @@
 	"proveit-reference-wikitext-label": "Texto wiki da referencia",
 	"proveit-remove-button": "Eliminar",
 	"proveit-show-all-button": "Amosar tódolos campos",
+	"proveit-archive-button": "Arquivo",
+	"proveit-archive-fetching": "Consultando...",
+	"proveit-archive-title": "URL arquivado",
+	"proveit-archive-no-url": "Non se atopou ningún URL arquivado",
+	"proveit-archive-error": "Produciuse un erro ao acceder á API de Wayback Machine",
 	"proveit-today-button": "Hoxe",
 	"proveit-update-button": "Actualizar"
 }

@@ -29,7 +29,7 @@
 	"proveit-no-template": "Geen sjabloon",
 	"proveit-no-template-data": "Geen sjabloongegevens gevonden",
 	"proveit-normalize-button": "Alles normaliseren",
-	"proveit-normalize-message": "Normaliseren... Dit duurt even.",
+	"proveit-normalize-message": "Normaliseren... dit kan seconden of zelfs minuten duren!",
 	"proveit-reference-content-label": "Referentie inhoud",
 	"proveit-reference-group-label": "Referentiegroep",
 	"proveit-reference-name-label": "Referentie naam",

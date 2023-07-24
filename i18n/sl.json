@@ -30,6 +30,11 @@
 	"proveit-reference-wikitext-label": "Vikibesedilo sklica",
 	"proveit-remove-button": "Odstrani",
 	"proveit-show-all-button": "Prikaži vsa polja",
+	"proveit-archive-button": "Arhiv",
+	"proveit-archive-fetching": "Pridobivanje&nbsp;...",
+	"proveit-archive-title": "Arhivirani URL",
+	"proveit-archive-no-url": "Arhivirani URL ni bil najden",
+	"proveit-archive-error": "Napaka pri dostopu do API-ja Wayback Machine",
 	"proveit-today-button": "Danes",
 	"proveit-update-button": "Posodobi"
 }

@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Adriendelucca",
 			"Fulup",
 			"Gwenn-Ael",
 			"Y-M D"
@@ -32,6 +33,7 @@
 	"proveit-reference-wikitext-label": "Wikitestenn an daveenn",
 	"proveit-remove-button": "Dilemel",
 	"proveit-show-all-button": "Diskwel an holl vaeziennoù",
+	"proveit-archive-no-url": "URL diellaouet ebet kavet",
 	"proveit-today-button": "Hiziv",
 	"proveit-update-button": "Hizivaat"
 }
