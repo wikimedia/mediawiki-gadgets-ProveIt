@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Caden99",
 			"Lakejason0",
 			"Liuxinyu970226",
 			"Shizhao",
@@ -39,6 +40,11 @@
 	"proveit-reference-wikitext-label": "参考文献的wikitext",
 	"proveit-remove-button": "移除",
 	"proveit-show-all-button": "显示所有字段",
+	"proveit-archive-button": "已存档",
+	"proveit-archive-fetching": "正在获取…",
+	"proveit-archive-title": "存档URL",
+	"proveit-archive-no-url": "未找到存档 URL",
+	"proveit-archive-error": "访问 Wayback Machine API 时出错",
 	"proveit-today-button": "今天",
 	"proveit-update-button": "更新"
 }
