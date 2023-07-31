@@ -30,6 +30,11 @@
 	"proveit-reference-wikitext-label": "Текст на наводот",
 	"proveit-remove-button": "Отстрани",
 	"proveit-show-all-button": "Покажи ги сите полиња",
+	"proveit-archive-button": "Архива",
+	"proveit-archive-fetching": "Се презема...",
+	"proveit-archive-title": "Архивирана URL",
+	"proveit-archive-no-url": "Не најдов архивирана URL",
+	"proveit-archive-error": "Грешка при пристапувањето на приложникот на Wayback Machine",
 	"proveit-today-button": "денес",
 	"proveit-update-button": "Поднови"
 }

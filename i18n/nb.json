@@ -24,6 +24,11 @@
 	"proveit-reference-template-label": "Hovedmal",
 	"proveit-remove-button": "Fjern",
 	"proveit-show-all-button": "Vis alle felter",
+	"proveit-archive-button": "Arkiver",
+	"proveit-archive-fetching": "Henter …",
+	"proveit-archive-title": "Arkivert URL",
+	"proveit-archive-no-url": "Ingen arkivert URL ble funnet",
+	"proveit-archive-error": "Feil ved tilgang til Wayback Machine API",
 	"proveit-today-button": "I dag",
 	"proveit-update-button": "Oppdater"
 }
