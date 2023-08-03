@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"C messier",
+			"Geraki",
 			"Jimkats",
 			"NikosLikomitros",
 			"Nikosgranturismogt"
@@ -30,8 +31,14 @@
 	"proveit-reference-group-label": "Ομάδα παραπομπών",
 	"proveit-reference-name-label": "Όνομα αναφοράς",
 	"proveit-reference-template-label": "Πρότυπο",
+	"proveit-reference-wikitext-label": "Κείμενο παραπομπής",
 	"proveit-remove-button": "Αφαίρεση",
 	"proveit-show-all-button": "Εμφάνιση όλων των πεδίων",
+	"proveit-archive-button": "Αρχείο",
+	"proveit-archive-fetching": "Ανακτάται...",
+	"proveit-archive-title": "Αρχειοθετημένο URL",
+	"proveit-archive-no-url": "Δεν βρέθηκε αρχειοθετημένο URL",
+	"proveit-archive-error": "Σφάλμα κατά την πρόσβαση στο Wayback Machine API",
 	"proveit-today-button": "Σήμερα",
 	"proveit-update-button": "Ενημέρωση"
 }

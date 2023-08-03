@@ -37,11 +37,6 @@
 	"proveit-reference-wikitext-label": "Chú thích wikitext",
 	"proveit-remove-button": "Loại bỏ",
 	"proveit-show-all-button": "Hiện tất cả ô điền",
-	"proveit-archive-button": "Lưu trữ",
-	"proveit-archive-fetching": "Đang theo dõi…",
-	"proveit-archive-title": "URL đã lưu trữ",
-	"proveit-archive-no-url": "Không tìm thấy URL lưu trữ nào",
-	"proveit-archive-error": "Lỗi khi truy cập Wayback Machine API",
 	"proveit-today-button": "Hôm nay",
 	"proveit-update-button": "Cập nhật"
 }
