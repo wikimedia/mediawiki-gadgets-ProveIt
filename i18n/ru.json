@@ -37,6 +37,11 @@
 	"proveit-reference-wikitext-label": "Викитекст сноски",
 	"proveit-remove-button": "Удалить",
 	"proveit-show-all-button": "Показать все поля",
+	"proveit-archive-button": "Архивировать",
+	"proveit-archive-fetching": "Получение…",
+	"proveit-archive-title": "Заархивированный URL-адрес",
+	"proveit-archive-no-url": "Заархивированный URL-адрес не найден",
+	"proveit-archive-error": "Ошибка доступа к API Wayback Machine",
 	"proveit-today-button": "Сегодня",
 	"proveit-update-button": "Обновить"
 }
