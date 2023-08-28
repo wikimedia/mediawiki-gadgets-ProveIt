@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Jilorisa"
+		]
+	},
+	"proveit-add-bibliography-button": "Poruhango o bibliografi",
+	"proveit-add-reference-button": "Ruhangai do sukuon",
+	"proveit-back-button": "Gumuli",
+	"proveit-citoid-label": "Sukuon Automatik",
+	"proveit-citoid-placeholder": "URL, DOI, ISBN toi ko' PMC/PMID",
+	"proveit-confirm-remove": "Mongidu nogi iti do toinsanan sitasi kumaa sukuon. Ok?",
+	"proveit-insert-button": "Posuango",
+	"proveit-no-references": "Aiso sukuon do nokito",
+	"proveit-no-template": "Aiso o template",
+	"proveit-no-template-data": "Aiso o template data nokito",
+	"proveit-reference-content-label": "Sukuon tonsi",
+	"proveit-reference-group-label": "Tinimungan sukuon",
+	"proveit-reference-name-label": "Ngaran sukuon",
+	"proveit-reference-template-label": "Templat",
+	"proveit-reference-wikitext-label": "Sukuon wikiteks",
+	"proveit-remove-button": "Iduo",
+	"proveit-show-all-button": "Pokitono toinsanan gana",
+	"proveit-today-button": "Baino"
+}
