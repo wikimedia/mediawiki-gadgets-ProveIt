@@ -1,0 +1,41 @@
+{
+	"@metadata": {
+		"authors": [
+			"Саид Мисарбиев",
+			"Умар"
+		]
+	},
+	"proveit-add-bibliography-button": "ТӀетоха библиографи",
+	"proveit-add-reference-button": "ТӀетоха охьадаьккхинарг",
+	"proveit-back-button": "ЙухагӀо",
+	"proveit-cite-button": "Цитата йан",
+	"proveit-citoid-error": "ГӀалат",
+	"proveit-citoid-label": "автоматца охьадаккхар",
+	"proveit-citoid-load": "Чуйаккха",
+	"proveit-citoid-loading": "Чуйолуш…",
+	"proveit-citoid-placeholder": "Хьажорг URL, DOI, ISBN йа PMC/PMID",
+	"proveit-citoid-tooltip": "Хьажорг URL, DOI, ISBN йа PMC/PMID чуйаккха, автоматца хаамаш схьабаха гӀертахь сервис Citoid\nчухула",
+	"proveit-confirm-remove": "ДӀайохар йу йерриг хьажоргаш охьадахаршна. Кхин дӀа хьой?",
+	"proveit-filter-fields": "Аренийн литтар",
+	"proveit-filter-references": "Охьадаккхаран литтар",
+	"proveit-insert-button": "Чудилла",
+	"proveit-no-references": "Охьадахарш ца карийна",
+	"proveit-no-template": "Кеп йац",
+	"proveit-no-template-data": "Кепан хаамаш ца карийна",
+	"proveit-normalize-button": "Норме йаккха ша йерг",
+	"proveit-normalize-message": "Норме йаккха... Оцо дӀалаца тарло масех секунда йа минот.",
+	"proveit-reference-content-label": "Охьадаккхаран чулацам",
+	"proveit-reference-group-label": "Охьадаккхаран тоба",
+	"proveit-reference-name-label": "Охьаккхаран цӀе",
+	"proveit-reference-template-label": "Кеп",
+	"proveit-reference-wikitext-label": "Охьадаккхаран викийоза",
+	"proveit-remove-button": "ДӀайаккха",
+	"proveit-show-all-button": "Ша долу могӀанаш гайтар",
+	"proveit-archive-button": "Архивйан",
+	"proveit-archive-fetching": "Далар",
+	"proveit-archive-title": "Архив йина URL-адрес",
+	"proveit-archive-no-url": "Архив йина URL-адрес ца карийна",
+	"proveit-archive-error": "Wayback Machine API кхочу гӀалат",
+	"proveit-today-button": "Тахана",
+	"proveit-update-button": "Карлайаккха"
+}
