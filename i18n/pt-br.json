@@ -35,6 +35,11 @@
 	"proveit-reference-wikitext-label": "Referência do wikitexto",
 	"proveit-remove-button": "Remover",
 	"proveit-show-all-button": "Mostrar todos os campos",
+	"proveit-archive-button": "Arquivo",
+	"proveit-archive-fetching": "Buscando...",
+	"proveit-archive-title": "URL de arquivo",
+	"proveit-archive-no-url": "Nenhum URL arquivado foi encontrado",
+	"proveit-archive-error": "Erro ao acessar a API Wayback Machine",
 	"proveit-today-button": "Hoje",
 	"proveit-update-button": "Atualizar"
 }
