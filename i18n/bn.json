@@ -34,6 +34,11 @@
 	"proveit-reference-wikitext-label": "তথ্যসূত্র উইকিলেখা",
 	"proveit-remove-button": "সরান",
 	"proveit-show-all-button": "সব ক্ষেত্র দেখান",
+	"proveit-archive-button": "আর্কাইভ",
+	"proveit-archive-fetching": "আনা হচ্ছে...",
+	"proveit-archive-title": "আর্কাইভের ইউআরএল",
+	"proveit-archive-no-url": "কোনো আর্কাইভকৃত ইউআরএল পাওয়া যায়নি",
+	"proveit-archive-error": "ওয়েব্যাক মেশিন এপিআইতে প্রবেশে সমস্যা",
 	"proveit-today-button": "আজ",
 	"proveit-update-button": "হালনাগাদ করুন"
 }
