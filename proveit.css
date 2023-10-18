@@ -138,7 +138,7 @@
 }
 
 #proveit-reference-content {
-	font-family: monospace !important;
+	font-family: monospace, monospace !important;
 }
 
 #proveit-form button {
