@@ -4,6 +4,7 @@
 			"Acamicamacaraca",
 			"BadDog",
 			"Kizule",
+			"Milicevic01",
 			"Obsuser",
 			"Srdjan m",
 			"Srđan",
@@ -36,6 +37,11 @@
 	"proveit-reference-wikitext-label": "Референца викитекста",
 	"proveit-remove-button": "Уклони",
 	"proveit-show-all-button": "Прикажи сва поља",
+	"proveit-archive-button": "Архива",
+	"proveit-archive-fetching": "Добављање...",
+	"proveit-archive-title": "Архивирани URL",
+	"proveit-archive-no-url": "Није пронађен архивирани URL",
+	"proveit-archive-error": "Дошло је до грешке приликом приступања Wayback Machine API-ја",
 	"proveit-today-button": "Данас",
 	"proveit-update-button": "Ажурирај"
 }

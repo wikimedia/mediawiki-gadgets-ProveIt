@@ -33,6 +33,11 @@
 	"proveit-reference-wikitext-label": "Referenca vikiteksta",
 	"proveit-remove-button": "Ukloni",
 	"proveit-show-all-button": "Prikaži sva polja",
+	"proveit-archive-button": "Arhiva",
+	"proveit-archive-fetching": "Dobavljanje...",
+	"proveit-archive-title": "URL arhive",
+	"proveit-archive-no-url": "Nije pronađen URL arhive",
+	"proveit-archive-error": "Došlo je do greške prilikom pristupanja Wayback Machine-ov API-ja",
 	"proveit-today-button": "Danas",
 	"proveit-update-button": "Ažuriraj"
 }
