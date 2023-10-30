@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Tokvo",
-			"Xuacu"
+			"Xuacu",
+			"YoaR"
 		]
 	},
 	"proveit-add-bibliography-button": "Amestar bibliografía",
@@ -23,7 +24,7 @@
 	"proveit-no-template": "Sin plantía",
 	"proveit-no-template-data": "Nun s'alcontaron los datos de la plantía",
 	"proveit-normalize-button": "Normalizar too",
-	"proveit-normalize-message": "Normalizando... esto pué tardar dellos segundos, ¡inclusive minutos!",
+	"proveit-normalize-message": "Normalizando... esto pue tardar dellos segundos, ¡inclusive minutos!",
 	"proveit-reference-content-label": "Conteníu de la referencia",
 	"proveit-reference-group-label": "Grupu de la referencia",
 	"proveit-reference-name-label": "Nome de la referencia",
