@@ -1180,10 +1180,10 @@ window.ProveIt = {
 				// If we're inside a link or subtemplate, don't disturb it
 				if ( linkDepth || subtemplateDepth ) {
 					params[ paramName ] += '|' + paramString;
-					if ( paramString.indexOf( ']]' ) > -1 ) {
+					if ( paramString.indexOf( ']]' ) > -1 && paramString.indexOf( '[[' ) === -1 ) {
 						linkDepth--;
 					}
-					if ( paramString.indexOf( '}}' ) > -1 ) {
+					if ( paramString.indexOf( '}}' ) > -1 && paramString.indexOf( '{{' ) === -1 ) {
 						subtemplateDepth--;
 					}
 					continue;
@@ -1203,10 +1203,10 @@ window.ProveIt = {
 				paramValue = paramString.substring( indexOfEqual + 1 ).trim();
 
 				// Check if there's an unclosed link or subtemplate
-				if ( paramValue.indexOf( '[[' ) > -1 && paramValue.indexOf( ']]' ) === -1 ) {
+				if ( paramValue.lastIndexOf( '[[' ) > paramValue.lastIndexOf( ']]' ) ) {
 					linkDepth++;
 				}
-				if ( paramValue.indexOf( '{{' ) > -1 && paramValue.indexOf( '}}' ) === -1 ) {
+				if ( paramValue.lastIndexOf( '{{' ) > paramValue.lastIndexOf( '}}' ) ) {
 					subtemplateDepth++;
 				}
 
