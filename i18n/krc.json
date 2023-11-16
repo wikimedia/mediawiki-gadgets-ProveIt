@@ -30,6 +30,11 @@
 	"proveit-reference-wikitext-label": "Белгини викитексти",
 	"proveit-remove-button": "Кетер",
 	"proveit-show-all-button": "Бютеу къырланы кёргюз",
+	"proveit-archive-button": "Архив эт",
+	"proveit-archive-fetching": "Алыу...",
+	"proveit-archive-title": "Архивленнген URL-адрес",
+	"proveit-archive-no-url": "Архивленнген URL-адрес табылмагъанды",
+	"proveit-archive-error": "Wayback Machine API кириуню халаты",
 	"proveit-today-button": "Бюгюн",
 	"proveit-update-button": "Джангырт"
 }
