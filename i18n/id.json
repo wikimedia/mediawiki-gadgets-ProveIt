@@ -3,14 +3,15 @@
 		"authors": [
 			"Akmaie Ajam",
 			"Hidayatsrf",
-			"RaymondSutanto94"
+			"RaymondSutanto94",
+			"Veracious"
 		]
 	},
 	"proveit-add-bibliography-button": "Tambahkan bibliografi",
 	"proveit-add-reference-button": "Tambah rujukan",
 	"proveit-back-button": "Kembali",
 	"proveit-cite-button": "Kutip",
-	"proveit-citoid-error": "Kesalahan",
+	"proveit-citoid-error": "Galat",
 	"proveit-citoid-label": "Referensi otomatis",
 	"proveit-citoid-load": "Muatkan",
 	"proveit-citoid-loading": "Memuat...",
@@ -32,6 +33,9 @@
 	"proveit-reference-wikitext-label": "Referensikan teks wiki",
 	"proveit-remove-button": "Hapus",
 	"proveit-show-all-button": "Tampilkan semua form",
+	"proveit-archive-button": "Arsip",
+	"proveit-archive-title": "URL yang diarsipkan",
+	"proveit-archive-no-url": "Tidak ada URL yang ditemukan di arsip",
 	"proveit-today-button": "Hari ini",
 	"proveit-update-button": "Perbarui"
 }
