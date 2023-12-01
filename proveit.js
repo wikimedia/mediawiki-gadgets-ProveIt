@@ -312,19 +312,19 @@ window.ProveIt = {
 			var $normalizeButton = $( '<button>' ).attr( 'id', 'proveit-normalize-button' ).text( mw.message( 'proveit-normalize-button' ) );
 			$footer.append( $normalizeButton );
 			$normalizeButton.on( 'click', function () {
-				$( this ).remove();
-				mw.notify( mw.message( 'proveit-normalize-message' ) );
-				setTimeout( function () {
-					references.forEach( function ( reference ) {
-						ProveIt.buildForm( reference ); // There's no current way to avoid going through the interface, but the user doesn't notice
-						ProveIt.update( reference );
+				var warning = mw.config.get( 'proveit-normalize-warning' );
+				if ( warning ) {
+					var $warning = $( '<div>' + warning + '</div>' );
+					OO.ui.confirm( $warning ).done( function ( confirm ) {
+						if ( confirm ) {
+							$( this ).remove();
+							ProveIt.normalizeAll( references, templates );
+						}
 					} );
-					templates.forEach( function ( template ) {
-						ProveIt.buildForm( template );
-						ProveIt.update( template );
-					} );
-					ProveIt.buildList();
-				}, 100 );
+				} else {
+					$( this ).remove();
+					ProveIt.normalizeAll( references, templates );
+				}
 			} );
 			var $filterReferences = $( '<input>' ).attr( 'placeholder', mw.message( 'proveit-filter-references' ) );
 			$footer.prepend( $filterReferences );
@@ -356,6 +356,27 @@ window.ProveIt = {
 				template = new ProveIt.Template( wikitext );
 			ProveIt.buildForm( template );
 		} );
+	},
+
+	/**
+	 * Normalize all references
+	 *
+	 * @param {ProveIt.Reference[]} references Array of Reference objects
+	 * @param {ProveIt.Template[]} templates Array of Template objects
+	 */
+	normalizeAll: function ( references, templates ) {
+		mw.notify( mw.message( 'proveit-normalize-message' ) );
+		setTimeout( function () {
+			references.forEach( function ( reference ) {
+				ProveIt.buildForm( reference ); // There's no current way to avoid going through the interface, but the user doesn't notice
+				ProveIt.update( reference );
+			} );
+			templates.forEach( function ( template ) {
+				ProveIt.buildForm( template );
+				ProveIt.update( template );
+			} );
+			ProveIt.buildList();
+		}, 100 );
 	},
 
 	/**
