@@ -33,6 +33,11 @@
 	"proveit-reference-wikitext-label": "Viite vikitekst",
 	"proveit-remove-button": "Eemalda",
 	"proveit-show-all-button": "Kuva kõik väljad",
+	"proveit-archive-button": "Arhiiv",
+	"proveit-archive-fetching": "Tõmbamine...",
+	"proveit-archive-title": "Arhiveeritud URL",
+	"proveit-archive-no-url": "Arhiveeritud URL-i ei leitud",
+	"proveit-archive-error": "Wayback Machine API ligipääsu viga",
 	"proveit-today-button": "Täna",
 	"proveit-update-button": "Värskenda"
 }
