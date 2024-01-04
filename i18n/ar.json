@@ -4,6 +4,7 @@
 			"Habib-d",
 			"Meno25",
 			"Mido",
+			"Sandra Hanbo",
 			"ديفيد"
 		]
 	},
@@ -33,6 +34,11 @@
 	"proveit-reference-wikitext-label": "نص الويكي للمرجع",
 	"proveit-remove-button": "إزالة",
 	"proveit-show-all-button": "عرض جميع الحقول",
+	"proveit-archive-button": "الأرشيف",
+	"proveit-archive-fetching": "جارٍ الجلب...",
+	"proveit-archive-title": "مسار مؤرشف",
+	"proveit-archive-no-url": "لم يُعثَر على مسار مؤرشف",
+	"proveit-archive-error": "خطأ في الوصول إلى API Wayback Machine",
 	"proveit-today-button": "اليوم",
 	"proveit-update-button": "تحديث"
 }
