@@ -1,6 +1,6 @@
 /**
  * ProveIt is a smart and simple reference manager for Wikipedia (and any other MediaWiki wiki)
- * Documentation at https://commons.wikimedia.org/wiki/Help:Gadget-ProveIt
+ * Documentation at https://www.mediawiki.org/wiki/ProveIt
  *
  * Copyright 2008-2011 Georgia Tech Research Corporation, Atlanta, GA 30332-0415, ALL RIGHTS RESERVED
  * Copyright 2011- Matthew Flaschen
