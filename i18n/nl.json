@@ -37,6 +37,11 @@
 	"proveit-reference-wikitext-label": "Wikitekst van de referentie",
 	"proveit-remove-button": "Verwijderen",
 	"proveit-show-all-button": "Toon alle velden",
+	"proveit-archive-button": "Archief",
+	"proveit-archive-fetching": "Ophalen ...",
+	"proveit-archive-title": "Archief-URL",
+	"proveit-archive-no-url": "Er is geen archief-URL gevonden",
+	"proveit-archive-error": "Fout bij het openen van de Wayback Machine-API",
 	"proveit-today-button": "Vandaag",
 	"proveit-update-button": "Bijwerken"
 }
