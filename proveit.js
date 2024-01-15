@@ -1,5 +1,5 @@
 /**
- * ProveIt is a smart and simple reference manager for Wikipedia (and any other MediaWiki wiki)
+ * ProveIt is a reference manager for Wikipedia and any other MediaWiki wiki
  * Documentation at https://www.mediawiki.org/wiki/ProveIt
  *
  * Copyright 2008-2011 Georgia Tech Research Corporation, Atlanta, GA 30332-0415, ALL RIGHTS RESERVED
@@ -9,6 +9,8 @@
  * ProveIt is available under the GNU Free Documentation License (http://www.gnu.org/copyleft/fdl.html),
  * the Creative Commons Attribution/Share-Alike License 3.0 (http://creativecommons.org/licenses/by-sa/3.0/)
  * and the GNU General Public License 2 (http://www.gnu.org/licenses/gpl-2.0.html)
+ *
+ * <nowiki>
  */
 window.ProveIt = {
 
@@ -345,13 +347,13 @@ window.ProveIt = {
 
 		// Bind events
 		$addReferenceButton.on( 'click', function () {
-			var templateName = $.cookie( 'proveit-last-template' ), // Remember the last choice
+			var templateName = mw.cookie.get( 'proveit-last-template' ), // Remember the last choice
 				wikitext = templateName ? '<ref>{{' + templateName + '}}</ref>' : '<ref></ref>',
 				reference = new ProveIt.Reference( wikitext );
 			ProveIt.buildForm( reference );
 		} );
 		$addBibliographyButton.on( 'click', function () {
-			var templateName = $.cookie( 'proveit-last-template' ), // Remember the last choice
+			var templateName = mw.cookie.get( 'proveit-last-template' ), // Remember the last choice
 				wikitext = templateName ? '{{' + templateName + '}}' : '',
 				template = new ProveIt.Template( wikitext );
 			ProveIt.buildForm( template );
@@ -505,7 +507,7 @@ window.ProveIt = {
 			template.data = template.getData();
 			template.params = template.getParams();
 			template.paramOrder = template.getParamOrder();
-			$.cookie( 'proveit-last-template', template.name ); // Remember the new choice
+			mw.cookie.set( 'proveit-last-template', template.name ); // Remember the new choice
 			ProveIt.buildTemplateFields( template );
 		} );
 
@@ -1573,7 +1575,8 @@ window.ProveIt = {
 $.when( mw.loader.using( [
 	'mediawiki.api',
 	'mediawiki.util',
-	'jquery.cookie',
+	'mediawiki.cookie',
 	'jquery.textSelection',
 	'jquery.ui'
 ] ), $.ready ).then( ProveIt.init );
+// </nowiki>
