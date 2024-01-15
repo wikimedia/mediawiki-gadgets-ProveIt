@@ -2,8 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Akmaie Ajam",
+			"Daud I.F. Argana",
 			"Hidayatsrf",
 			"RaymondSutanto94",
+			"Robifr",
 			"Veracious"
 		]
 	},
@@ -34,8 +36,10 @@
 	"proveit-remove-button": "Hapus",
 	"proveit-show-all-button": "Tampilkan semua form",
 	"proveit-archive-button": "Arsip",
+	"proveit-archive-fetching": "Mengambil...",
 	"proveit-archive-title": "URL yang diarsipkan",
 	"proveit-archive-no-url": "Tidak ada URL yang ditemukan di arsip",
+	"proveit-archive-error": "Kesalahan saat mengakses API Mesin Wayback",
 	"proveit-today-button": "Hari ini",
 	"proveit-update-button": "Perbarui"
 }
