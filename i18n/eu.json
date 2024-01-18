@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"An13sa",
+			"Atzerritik",
 			"Mikel Ibaiba",
 			"Subi",
 			"Theklan"
@@ -33,6 +34,11 @@
 	"proveit-reference-wikitext-label": "Erreferentzia-wikitestua",
 	"proveit-remove-button": "Kendu",
 	"proveit-show-all-button": "Eremu guztiak erakutsi",
+	"proveit-archive-button": "Artxiboa",
+	"proveit-archive-fetching": "Eskuratzen...",
+	"proveit-archive-title": "Artxibatutako URLa",
+	"proveit-archive-no-url": "Ez da artxibatutako URLrik aurkitu",
+	"proveit-archive-error": "Errore bat gertatu da Wayback Machine APIra sartzean",
 	"proveit-today-button": "Gaur",
 	"proveit-update-button": "Eguneratu"
 }
