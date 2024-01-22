@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Ajiniyaz Nurniyazov",
+			"Inabat Allanova",
 			"Nurlan"
 		]
 	},
@@ -31,6 +32,11 @@
 	"proveit-reference-wikitext-label": "Silteme Wikiteskti",
 	"proveit-remove-button": "Alıp taslaw",
 	"proveit-show-all-button": "Barlıq maydanlardı kórsetiw",
+	"proveit-archive-button": "Arxiv",
+	"proveit-archive-fetching": "Alıp barılmaqta...",
+	"proveit-archive-title": "Arxivlengen URL",
+	"proveit-archive-no-url": "Heshqanday arxivlengen URL tabılmadı",
+	"proveit-archive-error": "Wayback Machine API-ge qosılıwda qátelik júz berdi",
 	"proveit-today-button": "Búgin",
 	"proveit-update-button": "Jańalaw"
 }

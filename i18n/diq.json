@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"1917 Ekim Devrimi",
+			"GolyatGeri",
 			"Mirzali",
 			"Orbot707"
 		]
@@ -32,6 +33,11 @@
 	"proveit-reference-wikitext-label": "Nusteyê referansi",
 	"proveit-remove-button": "Wedare",
 	"proveit-show-all-button": "Cayanê pêroyıne bıvêne",
+	"proveit-archive-button": "Arşiv",
+	"proveit-archive-fetching": "Ano...",
+	"proveit-archive-title": "Arşiv biyayey URL",
+	"proveit-archive-no-url": "Arşiv biyaye URL nêvineyao",
+	"proveit-archive-error": "API Wayback Machine ya irtibat nêkewiyao",
 	"proveit-today-button": "Ewro",
 	"proveit-update-button": "Rocane ke"
 }
