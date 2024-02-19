@@ -35,9 +35,9 @@
 	"proveit-show-all-button": "Cayanê pêroyıne bıvêne",
 	"proveit-archive-button": "Arşiv",
 	"proveit-archive-fetching": "Ano...",
-	"proveit-archive-title": "Arşiv biyayey URL",
-	"proveit-archive-no-url": "Arşiv biyaye URL nêvineyao",
-	"proveit-archive-error": "API Wayback Machine ya irtibat nêkewiyao",
+	"proveit-archive-title": "URL-yo arşivkerde",
+	"proveit-archive-no-url": "URL-yo arşivkerde nêvineyayo",
+	"proveit-archive-error": "Cıreştışê Wayback Machine API-yi de xeta",
 	"proveit-today-button": "Ewro",
 	"proveit-update-button": "Rocane ke"
 }
