@@ -31,6 +31,11 @@
 	"proveit-reference-wikitext-label": "Вікітэкст зноскі",
 	"proveit-remove-button": "Выдаліць",
 	"proveit-show-all-button": "Паказаць усе палі",
+	"proveit-archive-button": "Заархіваваць",
+	"proveit-archive-fetching": "Здабываньне…",
+	"proveit-archive-title": "Заархіваваны URL",
+	"proveit-archive-no-url": "Заархіваваны URL ня знойдзены",
+	"proveit-archive-error": "Памылка досягу да API Wayback Machine",
 	"proveit-today-button": "Сёньня",
 	"proveit-update-button": "Абнавіць"
 }
