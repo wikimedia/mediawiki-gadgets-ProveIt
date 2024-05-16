@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Suleiman the Magnificent Television",
 			"Ykhwong",
 			"그냥기여자"
 		]
@@ -31,6 +32,8 @@
 	"proveit-reference-wikitext-label": "각주 위키텍스트",
 	"proveit-remove-button": "제거",
 	"proveit-show-all-button": "모든 필드 표시",
+	"proveit-archive-button": "아카이브",
+	"proveit-archive-title": "보관된 URL",
 	"proveit-today-button": "오늘",
 	"proveit-update-button": "업데이트"
 }
