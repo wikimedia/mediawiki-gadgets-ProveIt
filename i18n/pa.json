@@ -2,13 +2,14 @@
 	"@metadata": {
 		"authors": [
 			"AnupamM",
+			"Cabal",
 			"Sony dandiwal"
 		]
 	},
 	"proveit-add-bibliography-button": "ਪੁਸਤਕ ਸੂਚੀ ਸ਼ਾਮਲ ਕਰੋ",
 	"proveit-back-button": "ਪਿੱਛੇ",
 	"proveit-cite-button": "ਹਵਾਲਾ",
-	"proveit-citoid-error": "ਗਲਤੀ",
+	"proveit-citoid-error": "ਗ਼ਲਤੀ",
 	"proveit-citoid-load": "ਲੋਡ ਕਰੋ",
 	"proveit-citoid-loading": "ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
 	"proveit-citoid-placeholder": "URL, DOI, ISBN ਜਾਂ PMC/PMID",
