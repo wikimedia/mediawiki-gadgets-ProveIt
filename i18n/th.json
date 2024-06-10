@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Aefgh39622",
+			"Ekminarin",
 			"Patsagorn Y.",
 			"Prame Tan"
 		]
@@ -15,7 +16,7 @@
 	"proveit-citoid-load": "โหลด",
 	"proveit-citoid-loading": "กำลังโหลด...",
 	"proveit-citoid-placeholder": "URL, DOI, ISBN หรือ PMC/PMID",
-	"proveit-citoid-tooltip": "ป้อน URL, DOI, ISBN หรือ PMC/PMID เพื่อลองแยกรายละเอียดอัตโนมัติผ่านบริการ Citoid",
+	"proveit-citoid-tooltip": "กรอก URL, DOI, ISBN หรือ PMC/PMID เพื่อลองแยกรายละเอียดอัตโนมัติผ่านบริการ Citoid",
 	"proveit-confirm-remove": "การดำเนินการนี้จะลบการอ้างอิงทั้งหมดที่อ้างอิงแหล่งอ้างอิงนี้ คุณแน่ใจหรือไม่?",
 	"proveit-filter-fields": "กรองเขตข้อมูล",
 	"proveit-filter-references": "กรองรายการอ้างอิง",
