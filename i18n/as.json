@@ -31,6 +31,11 @@
 	"proveit-reference-wikitext-label": "তথ্যসূত্ৰ ৱিকিপাঠ্য",
 	"proveit-remove-button": "আঁতৰাওক",
 	"proveit-show-all-button": "সকলো ক্ষেত্ৰ দেখুৱাওক",
+	"proveit-archive-button": "আৰ্কাইভ কৰক",
+	"proveit-archive-fetching": "অনা হৈছে...",
+	"proveit-archive-title": "আৰ্কাইভ কৰা URL",
+	"proveit-archive-no-url": "কোনো আৰ্কাইভ কৰা URL পোৱা নগ'ল",
+	"proveit-archive-error": "Wayback Machine API-ত প্ৰৱেশ কৰাত ত্ৰুটি",
 	"proveit-today-button": "আজি",
 	"proveit-update-button": "আপডেইট কৰক"
 }
