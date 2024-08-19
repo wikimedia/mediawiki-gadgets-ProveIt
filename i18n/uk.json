@@ -34,11 +34,6 @@
 	"proveit-reference-wikitext-label": "Зразковий вікітекст",
 	"proveit-remove-button": "Вилучити",
 	"proveit-show-all-button": "Показати всі поля",
-	"proveit-archive-button": "Архів",
-	"proveit-archive-fetching": "Отримання...",
-	"proveit-archive-title": "Посилання на архів",
-	"proveit-archive-no-url": "Архівована URL-адреса не знайдена",
-	"proveit-archive-error": "Помилка доступу до Wayback Machine API",
 	"proveit-today-button": "Сьогодні",
 	"proveit-update-button": "Оновити"
 }
