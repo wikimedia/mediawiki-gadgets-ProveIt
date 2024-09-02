@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Ерней",
+			"Ильгиз",
 			"Ильнар"
 		]
 	},
@@ -31,6 +32,11 @@
 	"proveit-reference-wikitext-label": "Искәрмәнең викитексты",
 	"proveit-remove-button": "Бетерү",
 	"proveit-show-all-button": "Барлык кырларны күрсәтү",
+	"proveit-archive-button": "Архивларга",
+	"proveit-archive-fetching": "Ачу...",
+	"proveit-archive-title": "Архивланган URL адресы",
+	"proveit-archive-no-url": "Архивланган URL адресы табылмады",
+	"proveit-archive-error": "Wayback Machine APIга ирешем хатасы",
 	"proveit-today-button": "Бүген",
 	"proveit-update-button": "Яңарту"
 }
