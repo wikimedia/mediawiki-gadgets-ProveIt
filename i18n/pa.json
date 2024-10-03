@@ -7,7 +7,7 @@
 		]
 	},
 	"proveit-add-bibliography-button": "ਪੁਸਤਕ ਸੂਚੀ ਸ਼ਾਮਲ ਕਰੋ",
-	"proveit-back-button": "ਪਿੱਛੇ",
+	"proveit-back-button": "ਪਿਛਾਂਹ",
 	"proveit-cite-button": "ਹਵਾਲਾ",
 	"proveit-citoid-error": "ਗ਼ਲਤੀ",
 	"proveit-citoid-load": "ਲੋਡ ਕਰੋ",
@@ -25,5 +25,5 @@
 	"proveit-remove-button": "ਹਟਾਓ",
 	"proveit-show-all-button": "ਸਾਰੇ ਖੇਤਰ ਦਿਖਾਓ",
 	"proveit-today-button": "ਅੱਜ",
-	"proveit-update-button": "ਨਵਿਆਉ"
+	"proveit-update-button": "ਨਵਿਆਓ"
 }
