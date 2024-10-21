@@ -32,6 +32,11 @@
 	"proveit-reference-wikitext-label": "Šaltinio vikitekstas",
 	"proveit-remove-button": "Pašalinti",
 	"proveit-show-all-button": "Rodyti visus laukelius",
+	"proveit-archive-button": "Archyvas",
+	"proveit-archive-fetching": "Gaunama...",
+	"proveit-archive-title": "Archyvuotas URL",
+	"proveit-archive-no-url": "Joks archyvuotas URL nerastas",
+	"proveit-archive-error": "Klaida pasiekiant „Wayback Machine“ API",
 	"proveit-today-button": "Šiandien",
 	"proveit-update-button": "Atnaujinti"
 }

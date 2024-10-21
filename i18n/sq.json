@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Arianit",
 			"Klein Muçi"
 		]
 	},
@@ -17,7 +18,7 @@
 	"proveit-confirm-remove": "Kjo do të heqë të gjitha citimet nga referimi. Dakord?",
 	"proveit-filter-fields": "Filtro fushat e parametrave",
 	"proveit-filter-references": "Filtro referimet",
-	"proveit-insert-button": "Fute",
+	"proveit-insert-button": "Vendos",
 	"proveit-no-references": "Nuk u gjetën referime",
 	"proveit-no-template": "Nuk ka një stampë citimi",
 	"proveit-no-template-data": "Nuk u gjetën të dhëna për stampën",
