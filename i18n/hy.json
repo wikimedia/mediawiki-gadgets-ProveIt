@@ -34,6 +34,8 @@
 	"proveit-remove-button": "Հեռացնել",
 	"proveit-show-all-button": "Ցուցադրել բոլոր դաշտերը",
 	"proveit-archive-button": "Արխիվ",
+	"proveit-archive-title": "Արխիվացված URL",
+	"proveit-archive-no-url": "Արխիվացված URL չի գտնվել",
 	"proveit-today-button": "Այսօր",
 	"proveit-update-button": "Թարմացնել"
 }
