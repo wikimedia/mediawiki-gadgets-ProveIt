@@ -33,7 +33,10 @@
 	"proveit-remove-button": "제거",
 	"proveit-show-all-button": "모든 필드 표시",
 	"proveit-archive-button": "아카이브",
+	"proveit-archive-fetching": "가져오는 중...",
 	"proveit-archive-title": "보관된 URL",
+	"proveit-archive-no-url": "보존된 URL 발견되지 않음",
+	"proveit-archive-error": "웨이백 머신 API 접속 오류",
 	"proveit-today-button": "오늘",
 	"proveit-update-button": "업데이트"
 }
