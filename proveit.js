@@ -72,7 +72,7 @@ window.ProveIt = {
 	buildGUI: function () {
 
 		// Define the basic elements
-		var $gui = $( '<div>' ).attr( 'id', 'proveit' ),
+		var $gui = $( '<div>' ).attr( 'id', 'proveit' ).addClass( 'notheme' ),
 			$header = $( '<div>' ).attr( 'id', 'proveit-header' ),
 			$body = $( '<div>' ).attr( 'id', 'proveit-body' ),
 			$footer = $( '<div>' ).attr( 'id', 'proveit-footer' ),
