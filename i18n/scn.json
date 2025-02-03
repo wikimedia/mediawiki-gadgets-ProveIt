@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Ajeje Brazorf"
+			"Ajeje Brazorf",
+			"GianAntonucci"
 		]
 	},
 	"proveit-add-bibliography-button": "Agghiunci bibliugrafìa",
@@ -11,5 +12,5 @@
 	"proveit-insert-button": "Nzirisci",
 	"proveit-reference-template-label": "Template",
 	"proveit-remove-button": "Leva",
-	"proveit-today-button": "Oi"
+	"proveit-today-button": "Oji"
 }
