@@ -37,6 +37,11 @@
 	"proveit-reference-wikitext-label": "ویکی‌متن ارجاع",
 	"proveit-remove-button": "حذف",
 	"proveit-show-all-button": "نمایش همهٔ فیلدها",
+	"proveit-archive-button": "بایگانی",
+	"proveit-archive-fetching": "درحال واکشی ...",
+	"proveit-archive-title": "نشانی بایگانی",
+	"proveit-archive-no-url": "هیچ نشانی بایگانی‌شده‌ای پیدا نشد",
+	"proveit-archive-error": "خطا در دسترسی به رابط برنامه‌نویسی Wayback Machine",
 	"proveit-today-button": "امروز",
 	"proveit-update-button": "روزآمدسازی"
 }
