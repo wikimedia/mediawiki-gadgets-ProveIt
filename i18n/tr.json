@@ -4,6 +4,7 @@
 			"BaRaN6161 TURK",
 			"Bulgu",
 			"Grkn gll",
+			"Leo",
 			"Stonecy",
 			"Trockya"
 		]
@@ -34,6 +35,11 @@
 	"proveit-reference-wikitext-label": "Kaynak vikimetin",
 	"proveit-remove-button": "Kaldır",
 	"proveit-show-all-button": "Tüm alanları göster",
+	"proveit-archive-button": "Arşiv",
+	"proveit-archive-fetching": "Getiriliyor...",
+	"proveit-archive-title": "Arşivlenmiş URL",
+	"proveit-archive-no-url": "Arşivlenmiş URL bulunamadı",
+	"proveit-archive-error": "Wayback Machine API'sine erişim hatası",
 	"proveit-today-button": "Bugün",
 	"proveit-update-button": "Güncelle"
 }
