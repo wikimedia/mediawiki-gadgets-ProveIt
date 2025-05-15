@@ -10,7 +10,7 @@
 			"Şeyx Şamil"
 		]
 	},
-	"proveit-add-bibliography-button": "Biblioqrafiya əlavə edin",
+	"proveit-add-bibliography-button": "Biblioqrafiya əlavə et",
 	"proveit-add-reference-button": "İstinad əlavə et",
 	"proveit-back-button": "Geri",
 	"proveit-cite-button": "İstinad",
@@ -23,7 +23,7 @@
 	"proveit-confirm-remove": "Bu, həm də istinaddan bütün sitatları çıxaracaq. Əminsiniz?",
 	"proveit-filter-fields": "Süzgəc sahələri",
 	"proveit-filter-references": "İstinadları filtrlə",
-	"proveit-insert-button": "Yerləşdir",
+	"proveit-insert-button": "Əlavə et",
 	"proveit-no-references": "İstinadlar tapılmadı",
 	"proveit-no-template": "Şablon yoxdur",
 	"proveit-no-template-data": "Şablon məlumatları tapılmadı",
