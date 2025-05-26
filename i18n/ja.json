@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Afaz",
+			"Foomin10",
 			"Kokage si",
 			"LaMagiaaa",
 			"Omotecho",
@@ -28,11 +29,11 @@
 	"proveit-no-template-data": "テンプレートデータが見つかりませんでした",
 	"proveit-normalize-button": "すべて正規化する",
 	"proveit-normalize-message": "正規化しています...これは数秒から数分かかるかもしれません。",
-	"proveit-reference-content-label": "脚注内容",
-	"proveit-reference-group-label": "脚注グループ名",
-	"proveit-reference-name-label": "出典名",
+	"proveit-reference-content-label": "出典内容",
+	"proveit-reference-group-label": "出典 group",
+	"proveit-reference-name-label": "出典 name",
 	"proveit-reference-template-label": "テンプレート",
-	"proveit-reference-wikitext-label": "参考資料のウィキテキスト",
+	"proveit-reference-wikitext-label": "出典のウィキテキスト",
 	"proveit-remove-button": "除去",
 	"proveit-show-all-button": "全ての引数を表示",
 	"proveit-archive-button": "アーカイブ",
