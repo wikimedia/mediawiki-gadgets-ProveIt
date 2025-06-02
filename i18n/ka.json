@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"David1010",
+			"Mehman97",
 			"Გიო ოქრო",
 			"Იო ოქრო"
 		]
@@ -32,6 +33,11 @@
 	"proveit-reference-wikitext-label": "სქოლიოს ვიკიტექსტი",
 	"proveit-remove-button": "წაშლა",
 	"proveit-show-all-button": "ყველა ველის ჩვენება",
+	"proveit-archive-button": "არქივი",
+	"proveit-archive-fetching": "მოაქვს...",
+	"proveit-archive-title": "დაარქივებული URL",
+	"proveit-archive-no-url": "დაარქივებული URL ვერ მოიძებნა",
+	"proveit-archive-error": "შეცდომა Wayback Machine API-ზე წვდომისას.",
 	"proveit-today-button": "დღეს",
 	"proveit-update-button": "განახლება"
 }
