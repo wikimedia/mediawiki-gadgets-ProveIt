@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Belkacem77"
+			"Belkacem77",
+			"ButterflyOfFire"
 		]
 	},
+	"proveit-back-button": "Uɣal",
 	"proveit-cite-button": "Bder-d",
 	"proveit-citoid-error": "Tuccḍa",
 	"proveit-citoid-label": "Tamsisɣelt tawurmant",
