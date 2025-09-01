@@ -19,7 +19,7 @@
 	"proveit-citoid-load": "生成",
 	"proveit-citoid-loading": "生成中...",
 	"proveit-citoid-placeholder": "URL、DOI、ISBNまたはPMC/PMIDを入力してください",
-	"proveit-citoid-tooltip": "URL、DOI、ISBNまたはPMC/PMIDを入力することで、Citoidサービスで出典の詳細を抽出できます",
+	"proveit-citoid-tooltip": "URL や DOI、ISBN、PMC/PMID を入力することで、Citoid サービスで出典の詳細を抽出できます",
 	"proveit-confirm-remove": "これは典拠への参照もすべて除去します。続行しますか？",
 	"proveit-filter-fields": "引数を検索",
 	"proveit-filter-references": "脚注を検索",
