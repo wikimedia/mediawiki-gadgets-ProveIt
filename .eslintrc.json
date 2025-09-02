@@ -1,21 +1,11 @@
 {
 	"extends": [
-		"wikimedia/client",
 		"wikimedia/jquery",
-		"wikimedia/mediawiki"
+		"wikimedia/mediawiki",
+		"wikimedia/language/es2018"
 	],
-	"globals": {
-		"ProveIt": "writable",
-		"ve": "readonly",
-		"OO": "readonly"
-	},
 	"rules": {
 		"max-len": "off",
-		"no-alert": "off",
-		"no-jquery/no-class-state": "off",
-		"no-jquery/no-global-selector": "off",
-		"no-jquery/no-is-numeric": "off",
-		"one-var": "off",
-		"vars-on-top": "off"
+		"no-jquery/no-global-selector": "off"
 	}
 }

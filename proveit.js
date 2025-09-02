@@ -3,1554 +3,1375 @@
  * Documentation at https://www.mediawiki.org/wiki/ProveIt
  *
  * Copyright 2008-2011 Georgia Tech Research Corporation, Atlanta, GA 30332-0415, ALL RIGHTS RESERVED
- * Copyright 2011- Matthew Flaschen
+ * Copyright 2011-2014 Matthew Flaschen
  * Rewritten, internationalized, improved and maintained by Sophivorus since 2014
  *
  * ProveIt is available under the GNU Free Documentation License (http://www.gnu.org/copyleft/fdl.html),
  * the Creative Commons Attribution/Share-Alike License 3.0 (http://creativecommons.org/licenses/by-sa/3.0/)
  * and the GNU General Public License 2 (http://www.gnu.org/licenses/gpl-2.0.html)
- *
- * <nowiki>
  */
+
+/* global ProveIt, WikitextParser, ve */
+
+// <nowiki>
+
 window.ProveIt = {
 
 	/**
+	 * Hard-coded interface messages in English
+	 * Translations are fetched from Gerrit when available
+ 	 */
+	messages: {
+		'proveit-add-reference-button': 'Add reference',
+		'proveit-add-reference-tooltip': 'Add a <ref> tag with a citation template inside',
+		'proveit-add-template-button': 'Add template',
+		'proveit-add-template-tooltip': 'Add a citation template without a <ref> tag',
+		'proveit-refresh-button': 'Refresh list',
+		'proveit-refresh-tooltip': 'Refresh the list of references',
+		'proveit-back-button': 'Back',
+		'proveit-back-tooltip': 'Return to the reference list',
+		'proveit-back-confirm': 'Your changes have not been copied to the page yet. Are you sure you want to leave?',
+		'proveit-previous-button': 'Previous',
+		'proveit-previous-tooltip': 'Go to the previous reference',
+		'proveit-next-button': 'Next',
+		'proveit-next-tooltip': 'Go to the next reference',
+		'proveit-reuse-button': 'Reuse',
+		'proveit-reuse-tooltip': 'Reuse this reference in another part of the page',
+		'proveit-filter-fields': 'Filter fields',
+		'proveit-filter-list': 'Filter list',
+		'proveit-insert-button': 'Insert',
+		'proveit-insert-tooltip': 'Insert in the page',
+		'proveit-no-references': 'No references found',
+		'proveit-normalize-button': 'Normalize all',
+		'proveit-normalize-tooltip': 'Normalize the spacing and parameter order of all the references and citation templates',
+		'proveit-normalize-confirm': 'You are about to normalize the spacing and parameter order of all the references and citation templates. Please note that edits that only do cosmetic changes may be considered disruptive.',
+		'proveit-reference-name-label': 'Reference name',
+		'proveit-reference-name-warning': 'This reference has one or more reuses or subreferences. Deleting the name will unlink them.',
+		'proveit-reference-name-required': 'Enter a name to reuse this reference.',
+		'proveit-reference-group-label': 'Reference group',
+		'proveit-reference-extends-label': 'Main reference',
+		'proveit-reference-extends-tooltip': 'Name of the reference of which this is an extension',
+		'proveit-reference-content-label': 'Reference content',
+		'proveit-generate-label': 'Automatic citation',
+		'proveit-generate-button': 'Generate',
+		'proveit-generate-tooltip': 'Enter a URL, DOI, ISBN, PMC/PMID or a well-formed plain-text citation and then click here to try to generate a citation template automatically',
+		'proveit-generate-placeholder': 'Enter a URL, DOI, ISBN, PMC/PMID or a well-formed plain-text citation',
+		'proveit-generate-generating': 'Generating...',
+		'proveit-generate-fail': 'A citation could not be generated from the given input',
+		'proveit-template-label': 'Template',
+		'proveit-template-select': 'Select a template',
+		'proveit-remove-button': 'Remove',
+		'proveit-remove-tooltip': 'Remove from the page',
+		'proveit-remove-confirm': 'This will also remove all reuses and subreferences of this reference. Ok?',
+		'proveit-show-all-button': 'Show all',
+		'proveit-show-all-tooltip': 'Show all the fields',
+		'proveit-archive-button': 'Archive',
+		'proveit-archive-tooltip': 'Get the latest archived URL from the Wayback Machine',
+		'proveit-archive-fetching': 'Fetching...',
+		'proveit-archive-success': 'Please test the archived URL before using it: $1',
+		'proveit-archive-not-found': 'No archived URL was found',
+		'proveit-archive-error': 'Error accessing Wayback Machine',
+		'proveit-today-button': 'Today',
+		'proveit-today-tooltip': 'Insert today\'s date',
+		'proveit-normalize-date-button': 'Normalize',
+		'proveit-normalize-date-tooltip': 'Normalize the date according to this wiki\'s standards',
+		'proveit-update-button': 'Update',
+		'proveit-update-tooltip': 'Update in the page'
+	},
+
+	/**
 	 * Template data of the templates
-	 * Populated on ProveIt.realInit()
 	 *
-	 * @type {Object} Map from template name to template data
+	 * @type {Object} Map from canonical template name to template data
 	 */
 	templateData: {},
 
 	/**
+	 * Aliases of the templates
+	 *
+	 * @type {Object} Map from template alias to canonical template name
+	 */
+	templateAliases: {},
+
+	citationPatterns: [
+		/(?<last>.+?), (?<first>.+?) \((?<date>\d{4})\) '*(?<title>.+?)'*\.? pp?\.? ?(?<pages>[0-9-]+)/,
+		/(?<last>.+?), (?<first>.+?) \((?<date>\d{4})\) '*(?<title>.+?)'*\.?/
+	],
+
+	/**
 	 * Initialization script
 	 */
-	init: function () {
+	async init() {
 
 		// Remove any previous instance
 		$( '#proveit' ).remove();
 
 		// Only continue on wikitext pages
-		var contentModel = mw.config.get( 'wgPageContentModel' );
+		const contentModel = mw.config.get( 'wgPageContentModel' );
 		if ( contentModel !== 'wikitext' ) {
 			return;
 		}
 
 		// Only continue on supported namespaces
-		var namespace = mw.config.get( 'wgNamespaceNumber' ),
-			namespaces = mw.config.get( 'proveit-namespaces' );
-		if ( namespaces && namespaces.indexOf( namespace ) === -1 ) {
+		const namespace = mw.config.get( 'wgNamespaceNumber' );
+		const namespaces = mw.config.get( 'proveit-namespaces' );
+		if ( namespaces && !namespaces.includes( namespace ) ) {
 			return;
 		}
 
-		// Only continue on wikitext editors
-		if ( ProveIt.getEditor() === 'visualeditor' ) {
+		// Only continue on supported editors
+		const editor = ProveIt.getEditor();
+		if ( !editor ) {
 			return;
 		}
 
-		// Add the basic GUI
-		ProveIt.buildGUI();
+		// Load Codex and create the app
+		const require = await mw.loader.using( '@wikimedia/codex' );
+		const Vue = require( 'vue' );
+		const Codex = require( '@wikimedia/codex' );
+		const app = Vue.createMwApp( ProveIt.rootComponent );
+		app.component( 'cdx-button', Codex.CdxButton );
+		app.component( 'cdx-field', Codex.CdxField );
+		app.component( 'cdx-text-input', Codex.CdxTextInput );
+		app.component( 'cdx-text-area', Codex.CdxTextArea );
+		app.component( 'cdx-select', Codex.CdxSelect );
+		app.component( 'cdx-lookup', Codex.CdxLookup );
+		app.directive( 'tooltip', Codex.CdxTooltip );
 
-		// Remove ProveIt when switching out from the source editor
-		mw.hook( 've.deactivationComplete' ).add( function () {
-			$( '#proveit' ).remove();
-		} );
-
-		// When previewing, re-add the ProveIt tag (T154357)
-		if ( mw.config.get( 'wgAction' ) === 'submit' ) {
-			var currentSummary = $( '#wpSummary' ).val(),
-				proveitSummary = mw.config.get( 'proveit-summary' );
-			if ( proveitSummary && currentSummary.indexOf( proveitSummary ) > -1 ) {
-				ProveIt.addTag();
-			}
-		}
+		// Create a dummy element to mount the app
+		const mountPoint = document.createElement( 'div' );
+		document.body.append( mountPoint );
+		app.mount( mountPoint );
 	},
 
-	/**
-	 * Build the basic GUI and add it to the DOM
-	 */
-	buildGUI: function () {
+	rootComponent: {
 
-		// Define the basic elements
-		var $gui = $( '<div>' ).attr( 'id', 'proveit' ).addClass( 'notheme' ),
-			$header = $( '<div>' ).attr( 'id', 'proveit-header' ),
-			$body = $( '<div>' ).attr( 'id', 'proveit-body' ),
-			$footer = $( '<div>' ).attr( 'id', 'proveit-footer' ),
-			$logo = $( '<span>' ).attr( 'id', 'proveit-logo' ),
-			$logoText = $( '<span>' ).attr( 'id', 'proveit-logo-text' ).text( 'P' ),
-			$logoLeftBracket = $( '<span>' ).addClass( 'proveit-logo-bracket' ).text( '[' ),
-			$logoRightBracket = $( '<span>' ).addClass( 'proveit-logo-bracket' ).text( ']' );
+		template: `
+			<div id="proveit">
+				<div id="proveit-header">
+					<span id="proveit-logo" @click="toggle">
+						<span class="proveit-logo-bracket">[</span>
+						<span id="proveit-logo-text">{{ logo }}</span>
+						<span class="proveit-logo-bracket">]</span>
+					</span>
+					<div id="proveit-header-buttons" v-if="!minimized">
+						<div v-if="form">
+							<cdx-button @click="back" :title="messages[ 'proveit-back-tooltip' ]">{{ messages[ 'proveit-back-button' ] }}</cdx-button>
+							<cdx-button v-if="form.index > 0" @click="previousItem" :title="messages[ 'proveit-previous-tooltip' ]">{{ messages[ 'proveit-previous-button' ] }}</cdx-button>
+							<cdx-button v-if="form.index < list.length - 1" @click="nextItem" :title="messages[ 'proveit-next-tooltip' ]">{{ messages[ 'proveit-next-button' ] }}</cdx-button>
+						</div><div v-else>
+							<cdx-button action="progressive" @click="addReference" v-tooltip="messages[ 'proveit-add-reference-tooltip' ]">{{ messages[ 'proveit-add-reference-button' ] }}</cdx-button>
+							<cdx-button action="progressive" @click="addTemplate" v-tooltip="messages[ 'proveit-add-template-tooltip' ]">{{ messages[ 'proveit-add-template-button' ] }}</cdx-button>
+						</div>
+					</div>
+				</div>
+				<div id="proveit-body" v-if="!minimized">
+					<form id="proveit-form" v-if="form">
+						<cdx-field id="reference-name-field" v-if="form.object.type === 'reference' && !form.object.extends" :status="form.referenceNameStatus" :messages="form.referenceNameMessages">
+							<cdx-text-input v-model="form.object.name" @change="onReferenceNameChange" />
+							<template #label>{{ messages[ 'proveit-reference-name-label' ] }}</template>
+						</cdx-field>
+						<cdx-field v-if="form.object.type === 'reference'">
+							<cdx-text-input v-model="form.object.group" />
+							<template #label>{{ messages[ 'proveit-reference-group-label' ] }}</template>
+						</cdx-field>
+						<cdx-field v-if="form.object.type ==='reference' && form.object.extends">
+							<cdx-text-input v-model="form.object.extends" />
+							<template #label>{{ messages[ 'proveit-reference-extends-label' ] }}</template>
+						</cdx-field>
+						<cdx-field v-if="form.object.type ==='reference'" id="proveit-reference-content-field">
+							<cdx-text-area v-model="form.object.content" @change="onReferenceContentChange" />
+							<template #label>{{ messages[ 'proveit-reference-content-label' ] }}</template>
+						</cdx-field>
+						<cdx-field id="proveit-generate-field" :status="form.generateStatus" :messages="form.generateMessages">
+							<cdx-button type="button" @click="generate" v-tooltip="messages[ 'proveit-generate-tooltip' ]">{{ messages[ 'proveit-generate-button' ] }}</cdx-button>
+							<cdx-text-input v-model="form.generateInput" :placeholder="messages[ 'proveit-generate-placeholder' ]" />
+							<template #label>{{ messages[ 'proveit-generate-label' ] }}</template>
+						</cdx-field>
+						<cdx-field id="proveit-template-field">
+							<cdx-select v-model:selected="form.templateSelected" @update:selected="onTemplateSelect" :menu-items="form.templateOptions" :default-label="messages[ 'proveit-template-select' ]" />
+							<template #label>{{ messages[ 'proveit-template-label' ] }}</template>
+						</cdx-field>
+						<div id="proveit-template-fields" v-if="form.templateFields">
+							<cdx-field v-for="field in form.templateFields" :key="field.name" v-show="field.visible" :status="field.status" :messages="field.messages" :class="field.class">
+								<cdx-button v-if="field.type === 'url' && field.value && !field.value.includes( 'archive.org' )" type="button" @click="event => archiveURL( event, field )" :title="messages[ 'proveit-archive-tooltip' ]">{{ messages[ 'proveit-archive-button' ] }}</cdx-button>
+								<cdx-button v-if="field.type === 'date' && !field.value" type="button" @click="onTodayButtonClick( field )" :title="messages[ 'proveit-today-tooltip' ]">{{ messages[ 'proveit-today-button' ] }}</cdx-button>
+								<cdx-button v-if="field.type === 'date' && /^[0-9]{14}$/.test( field.value )" type="button" @click="onNormalizeDateButtonClick( field )" :title="messages[ 'proveit-normalize-date-tooltip' ]">{{ messages[ 'proveit-normalize-date-button' ] }}</cdx-button>
+								<cdx-lookup v-if="field.type === 'wiki-page-name'" v-model:input-value="field.value" v-model:selected="field.value" :menu-items="field.suggestions" @input="value => onWikiPageNameInput( value, field )"  @change="onTemplateFieldChange( field )" />
+								<cdx-text-area v-else-if="field.type === 'content'" v-model="field.value" @change="onTemplateFieldChange( field )" />
+								<cdx-text-input v-else v-model="field.value" @change="onTemplateFieldChange( field )" />
+								<template #label><span :data-tooltip="field.tooltip">{{ field.label }}</span></template>
+							</cdx-field>
+						</div>
+					</form>
+					<ol v-else-if="list.length" id="proveit-list">
+						<li class="proveit-item" v-for="( object, index ) in list" @click="viewForm( object, index )">
+							<span class="proveit-number">{{ index + 1 }}</span>
+							<span class="proveit-arrow" @click.stop="highlight( object )">↑</span>
+							<sup class="proveit-letter" v-if="object.reuses && object.reuses.length" @click.stop="highlight( object )">a</sup>
+							<sup class="proveit-letter" v-for="reuse in object.reuses" @click.stop="highlight( reuse )">{{ reuse.letter }}</sup>
+							<span class="proveit-template" v-if="object.template || object.name">{{ object.template && object.template.name || object.name }}</span>
+							<span class="proveit-snippet">{{ object.snippet }}</span>
+							<ol class="proveit-subrefs" v-if="object.subrefs && object.subrefs.length">
+								<li class="proveit-subref" v-for="subref in object.subrefs" @click.stop="highlight( subref )">{{ subref.snippet }}</li>
+							</ol>
+						</li>
+					</ol>
+					<div v-else id="proveit-no-references-message">{{ messages[ 'proveit-no-references' ] }}</div>
+				</div>
+				<div id="proveit-footer" v-if="!minimized">
+					<div v-if="form">
+						<cdx-button id="proveit-reuse-button" v-if="form.object.index !== undefined && form.object.type === 'reference'" @click="reuse" :title="messages[ 'proveit-reuse-tooltip' ]">{{ messages[ 'proveit-reuse-button' ] }}</cdx-button>
+						<cdx-button id="proveit-remove-button" v-if="form.object.index !== undefined" @click="remove" :title="messages[ 'proveit-remove-tooltip' ]">{{ messages[ 'proveit-remove-button' ] }}</cdx-button>
+						<cdx-button id="proveit-update-button" v-if="form.object.index !== undefined" @click="update" :title="messages[ 'proveit-update-tooltip' ]">{{ messages[ 'proveit-update-button' ] }}</cdx-button>
+						<cdx-button id="proveit-insert-button" v-if="form.object.index === undefined" @click="insert" :title="messages[ 'proveit-insert-tooltip' ]">{{ messages[ 'proveit-insert-button' ] }}</cdx-button>
+						<cdx-text-input id="proveit-filter-fields" v-if="form.templateFields" :placeholder="messages[ 'proveit-filter-fields' ]" @keyup="filterFields"></cdx-text-input>
+						<cdx-button id="proveit-show-all-button" v-if="form.templateFields" @click="showAll" :title="messages[ 'proveit-show-all-tooltip' ]">{{ messages[ 'proveit-show-all-button' ] }}</cdx-button>
+					</div>
+					<div v-else-if="list.length">
+						<cdx-button @click="viewList" :title="messages[ 'proveit-refresh-tooltip' ]">{{ messages[ 'proveit-refresh-button' ] }}</cdx-button>
+						<cdx-button @click="normalize" :title="messages[ 'proveit-normalize-tooltip' ]">{{ messages[ 'proveit-normalize-button' ] }}</cdx-button>
+						<cdx-text-input id="proveit-filter-list" :placeholder="messages[ 'proveit-filter-list' ]" @keyup="filterList"></cdx-text-input>
+					</div>
+				</div>
+			</div>
+		`,
 
-		// Put everything together and add it to the DOM
-		$logo.append( $logoLeftBracket, $logoText, $logoRightBracket );
-		$header.append( $logo );
-		$gui.append( $header, $body, $footer );
-		$( 'body' ).append( $gui );
+		data() {
+			return {
+				logo: 'P',
+				minimized: true,
+				list: [],
+				form: null
+			};
+		},
 
-		// Make the GUI draggable
-		$gui.draggable( {
-			handle: $header,
-			containment: 'window',
-			start: function () {
-				$gui.css( { right: 'auto', bottom: 'auto' } );
-			}
-		} );
+		mounted() {
+			this.loaded = false;
+			this.messages = {};
 
-		// Toggle the GUI when the logo is clicked
-		var minimized = true;
-		$logo.on( 'click', function () {
-			if ( minimized ) {
-				minimized = false;
-				$( '#proveit-logo-text' ).text( 'ProveIt' );
-				$( '#proveit-header button, #proveit-body, #proveit-footer' ).show();
-				if ( $.isEmptyObject( ProveIt.templateData ) ) {
-					ProveIt.realInit();
-				} else if ( $( '#proveit-list' ).length ) {
-					ProveIt.buildList(); // Make sure the list is updated
+			// Make the UI draggable using the deprecated jQuery UI
+			// Eventually this feature may have to be removed because it's not easy to replace
+			$( '#proveit' ).draggable( {
+				handle: $( '#proveit-header' ),
+				containment: 'window',
+				start: () => $( '#proveit' ).css( { right: 'auto', bottom: 'auto' } )
+			} );
+		},
+
+		methods: {
+
+			async toggle() {
+				if ( !this.loaded ) {
+					await this.load();
+					this.viewList();
 				}
-			} else {
-				minimized = true;
-				$( '#proveit-logo-text' ).text( 'P' );
-				$( '#proveit-header button, #proveit-body, #proveit-footer' ).hide();
-			}
-			$gui.css( { top: 'auto', left: 'auto', right: 0, bottom: 0 } ); // Reset the position of the gadget
-		} );
-	},
+				this.minimized = !this.minimized;
+				this.logo = this.minimized ? 'P' : 'ProveIt';
 
-	/**
-	 * Get the template data, redirects and interface messages, then build the reference list
-	 */
-	realInit: function () {
-
-		$( '#proveit-logo-text' ).text( '.' ); // Start loading
-
-		// Get the list of template names and prepend the namespace
-		var templates = mw.config.get( 'proveit-templates' ) ? mw.config.get( 'proveit-templates' ) : [],
-			formattedNamespaces = mw.config.get( 'wgFormattedNamespaces' ),
-			templateNamespace = formattedNamespaces[ 10 ],
-			titles = [];
-		templates.forEach( function ( templateName ) {
-			titles.push( templateNamespace + ':' + templateName );
-		} );
-
-		// Get the template data
-		var api = new mw.Api();
-		api.get( {
-			titles: titles.join( '|' ),
-			action: 'templatedata',
-			redirects: true,
-			includeMissingTitles: true,
-			format: 'json',
-			formatversion: 2
-		} ).done( function ( data ) {
-
-			$( '#proveit-logo-text' ).text( '..' ); // Still loading
-
-			// Extract and set the template data
-			var templateData, templateTitle, templateName;
-			for ( var id in data.pages ) {
-				templateData = data.pages[ id ];
-				if ( 'missing' in templateData ) {
-					continue;
-				}
-				templateTitle = templateData.title;
-				templateName = templateTitle.substring( templateTitle.indexOf( ':' ) + 1 ); // Remove the namespace
-				ProveIt.templateData[ templateName ] = templateData;
-			}
-
-			// Get all the redirects to the citaton templates
-			api.get( {
-				titles: titles.join( '|' ),
-				action: 'query',
-				prop: 'redirects',
-				rdlimit: 'max',
-				rdnamespace: 10,
-				format: 'json',
-				formatversion: 2
-			} ).done( function ( data ) {
-
-				$( '#proveit-logo-text' ).text( '...' ); // Still loading
-
-				// Map the redirects to the cannonical names
-				var redirects, redirectTitle, redirectName;
-				data.query.pages.forEach( function ( templateData ) {
-					templateTitle = templateData.title;
-					templateName = templateTitle.substring( templateTitle.indexOf( ':' ) + 1 ); // Remove the namespace
-					if ( 'redirects' in templateData ) {
-						redirects = templateData.redirects;
-						redirects.forEach( function ( redirect ) {
-							redirectTitle = redirect.title;
-							redirectName = redirectTitle.substring( redirectTitle.indexOf( ':' ) + 1 ); // Remove the namespace
-							ProveIt.templateData[ redirectName ] = templateName;
-						} );
-					}
-				} );
-
-				// Get the latest English messages
-				$.get( '//gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/gadgets/ProveIt/+/master/i18n/en.json?format=text', function ( data ) {
-
-					var englishMessages = JSON.parse( ProveIt.decodeBase64( data ) );
-					delete englishMessages[ '@metadata' ];
-
-					// Get the latest translations to the preferred user language
-					var userLanguage = mw.config.get( 'wgUserLanguage' );
-					$.get( '//gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/gadgets/ProveIt/+/master/i18n/' + userLanguage + '.json?format=text' ).always( function ( data, status ) {
-
-						$( '#proveit-logo-text' ).text( 'ProveIt' ); // Finish loading
-
-						var translatedMessages = {};
-						if ( status === 'success' ) {
-							translatedMessages = JSON.parse( ProveIt.decodeBase64( data ) );
-							delete translatedMessages[ '@metadata' ];
-						}
-
-						// Merge and set the messages
-						var messages = $.extend( {}, englishMessages, translatedMessages );
-						mw.messages.set( messages );
-
-						// Finally, build the list
-						ProveIt.buildList();
-					} );
-				} );
-			} );
-		} );
-	},
-
-	/**
-	 * Build the reference list and add it to the GUI
-	 */
-	buildList: function () {
-		var $list = $( '<ol>' ).attr( 'id', 'proveit-list' ),
-			$item, $span, $link;
-
-		// Build a list item for each reference
-		var wikitext = ProveIt.getWikitext(),
-			references = ProveIt.getReferences( wikitext );
-		references.forEach( function ( reference, index ) {
-			$item = $( '<li>' ).addClass( 'proveit-item' );
-			$item.on( 'click', reference, function ( event ) {
-				var reference = event.data;
-				ProveIt.highlight( reference );
-				ProveIt.buildForm( reference );
-			} );
-
-			// Add the number
-			$span = $( '<span>' ).addClass( 'proveit-number' ).text( index + 1 );
-			$item.append( $span );
-
-			// Add the arrow and letters
-			$link = $( '<a>' ).addClass( 'proveit-arrow' ).text( '↑' );
-			$link.on( 'click', reference, ProveIt.highlight );
-			$item.append( $link );
-
-			// Add the letters
-			if ( reference.citations.length ) {
-				$link = $( '<a>' ).addClass( 'proveit-letter' ).text( 'a' );
-				$link.on( 'click', reference, ProveIt.highlight );
-				$item.append( $link );
-
-				reference.citations.forEach( function ( citation, i ) {
-					var letter = String.fromCharCode( 98 + i ); // 97 is the ASCII code for 'b'
-					$link = $( '<a>' ).addClass( 'proveit-letter' ).text( letter );
-					$link.on( 'click', citation, ProveIt.highlight );
-					$item.append( $link );
-				} );
-			}
-
-			// Add the reference template, if any
-			if ( reference.template.name ) {
-				$span = $( '<span>' ).addClass( 'proveit-template' ).text( reference.template.name );
-				$item.append( $span );
-			}
-
-			// Add the reference snippet
-			$item.append( reference.snippet );
-
-			// Add to the list
-			$list.append( $item );
-		} );
-
-		// Build a list item for each template
-		// First remove the references from the wikitext to avoid matching the templates again
-		references.forEach( function ( reference ) {
-			wikitext = wikitext.replace( reference.wikitext, '' );
-		} );
-		var templates = ProveIt.getTemplates( wikitext );
-		templates.forEach( function ( template ) {
-			$item = $( '<li>' ).addClass( 'proveit-item' );
-			$item.on( 'click', template, function ( event ) {
-				var template = event.data;
-				ProveIt.highlight( template );
-				ProveIt.buildForm( template );
-			} );
-
-			$link = $( '<a>' ).addClass( 'proveit-arrow' ).text( '↓' );
-			$link.on( 'click', template, ProveIt.highlight );
-			$item.append( $link );
-
-			// Add the template name
-			$span = $( '<span>' ).addClass( 'proveit-template' ).text( template.name );
-			$item.append( $span );
-
-			// Add the template snippet
-			$item.append( template.snippet );
-
-			// Add to the list
-			$list.append( $item );
-		} );
-
-		if ( references.length || templates.length ) {
-			// Add the list to the GUI and make sure we're at the top
-			$( '#proveit-body' ).html( $list ).scrollTop( 0 );
-		} else {
-			var $div = $( '<div>' ).attr( 'id', 'proveit-no-references-message' ).text( mw.message( 'proveit-no-references' ) );
-			$( '#proveit-body' ).html( $div );
-		}
-
-		// Build the footer
-		var $footer = $( '#proveit-footer' );
-		$footer.empty();
-		if ( references.length || templates.length ) {
-			var $normalizeButton = $( '<button>' ).attr( 'id', 'proveit-normalize-button' ).text( mw.message( 'proveit-normalize-button' ) );
-			$footer.append( $normalizeButton );
-			$normalizeButton.on( 'click', function () {
-				var warning = mw.config.get( 'proveit-normalize-warning' );
-				if ( warning ) {
-					var $warning = $( '<div>' + warning + '</div>' );
-					OO.ui.confirm( $warning ).done( function ( confirm ) {
-						if ( confirm ) {
-							$( this ).remove();
-							ProveIt.normalizeAll( references, templates );
-						}
-					} );
+				// Reset the position of the gadget when minimized
+				// but store it in a cookie for future sessions (T148409)
+				const $proveit = $( '#proveit' );
+				if ( this.minimized ) {
+					const right = $proveit.css( 'right' );
+					const bottom = $proveit.css( 'bottom' );
+					ProveIt.setCookie( 'position-right', right );
+					ProveIt.setCookie( 'position-bottom', bottom );
+					$proveit.css( { top: 'auto', left: 'auto', right: 0, bottom: 0 } );
 				} else {
-					$( this ).remove();
-					ProveIt.normalizeAll( references, templates );
+					const right = ProveIt.getCookie( 'position-right' ) || 0;
+					const bottom = ProveIt.getCookie( 'position-bottom' ) || 0;
+					$proveit.css( { top: 'auto', left: 'auto', right: right, bottom: bottom } );
 				}
-			} );
-			var $filterReferences = $( '<input>' ).attr( 'placeholder', mw.message( 'proveit-filter-references' ) );
-			$footer.prepend( $filterReferences );
-			$filterReferences.on( 'keyup', function () {
-				var filter = $( this ).val().toLowerCase();
-				$( 'li', $list ).show().filter( function () {
-					return $( this ).text().toLowerCase().indexOf( filter ) === -1;
-				} ).hide();
-			} );
-		}
+			},
 
-		// Build the header
-		var $header = $( '#proveit-header' ),
-			$addReferenceButton = $( '<button>' ).text( mw.message( 'proveit-add-reference-button' ) ).addClass( 'progressive' ),
-			$addBibliographyButton = $( '<button>' ).text( mw.message( 'proveit-add-bibliography-button' ) );
-		$( 'button', $header ).remove();
-		$header.prepend( $addReferenceButton, $addBibliographyButton );
+			async load() {
 
-		// Bind events
-		$addReferenceButton.on( 'click', function () {
-			var templateName = mw.cookie.get( 'proveit-last-template' ), // Remember the last choice
-				wikitext = templateName ? '<ref>{{' + templateName + '}}</ref>' : '<ref></ref>',
-				reference = new ProveIt.Reference( wikitext );
-			ProveIt.buildForm( reference );
-		} );
-		$addBibliographyButton.on( 'click', function () {
-			var templateName = mw.cookie.get( 'proveit-last-template' ), // Remember the last choice
-				wikitext = templateName ? '{{' + templateName + '}}' : '',
-				template = new ProveIt.Template( wikitext );
-			ProveIt.buildForm( template );
-		} );
-	},
+				// Append the local template namespace to the template names
+				const templateNames = mw.config.get( 'proveit-templates' ) || [];
+				const formattedNamespaces = mw.config.get( 'wgFormattedNamespaces' );
+				const templateNamespace = formattedNamespaces[ 10 ];
+				const templateTitles = templateNames.map( ( templateName ) => templateNamespace + ':' + templateName );
 
-	/**
-	 * Normalize all references
-	 *
-	 * @param {ProveIt.Reference[]} references Array of Reference objects
-	 * @param {ProveIt.Template[]} templates Array of Template objects
-	 */
-	normalizeAll: function ( references, templates ) {
-		mw.notify( mw.message( 'proveit-normalize-message' ) );
-		setTimeout( function () {
-			references.forEach( function ( reference ) {
-				ProveIt.buildForm( reference ); // There's no current way to avoid going through the interface, but the user doesn't notice
-				ProveIt.update( reference );
-			} );
-			templates.forEach( function ( template ) {
-				ProveIt.buildForm( template );
-				ProveIt.update( template );
-			} );
-			ProveIt.buildList();
-		}, 100 );
-	},
+				// Get the template data
+				this.logo = '.'; // Indicate progress
+				const response = await new mw.Api().get( {
+					action: 'templatedata',
+					titles: templateTitles.join( '|' ),
+					redirects: true,
+					includeMissingTitles: true,
+					format: 'json',
+					formatversion: 2
+				} );
 
-	/**
-	 * Build the form and add it to the GUI
-	 *
-	 * @param {ProveIt.Reference|ProveIt.Template} object Reference or Template object to fill the form
-	 */
-	buildForm: function ( object ) {
-		var $form = $( '<div>' ).attr( 'id', 'proveit-form' ); // Yea it's not a <form>, for easier styling
+				// Save the template data
+				for ( const templateData of Object.values( response.pages ) ) {
+					if ( 'missing' in templateData ) {
+						continue;
+					}
+					const templateTitle = templateData.title;
+					const templateName = templateTitle.substring( templateTitle.indexOf( ':' ) + 1 ); // Remove the namespace
+					ProveIt.templateData[ templateName ] = templateData;
+				}
 
-		// Add the form to the GUI and make sure we're at the top
-		$( '#proveit-body' ).html( $form ).scrollTop( 0 );
+				// Get all the aliases of the templates
+				this.logo = '..'; // Indicate progress
+				const response2 = await new mw.Api().get( {
+					action: 'query',
+					titles: templateTitles.join( '|' ),
+					prop: 'redirects',
+					rdlimit: 'max',
+					rdnamespace: 10,
+					format: 'json',
+					formatversion: 2
+				} );
 
-		// Build the header
-		var $header = $( '#proveit-header' ),
-			$backButton = $( '<button>' ).text( mw.message( 'proveit-back-button' ) );
-		$( 'button', $header ).remove();
-		$header.prepend( $backButton );
-		$backButton.on( 'click', ProveIt.buildList );
+				// Map the redirects to the canonical names
+				for ( const template of Object.values( response2.query.pages ) ) {
+					if ( 'redirects' in template ) {
+						const templateTitle = template.title;
+						const templateName = templateTitle.substring( templateTitle.indexOf( ':' ) + 1 ); // Remove the namespace
+						for ( const redirect of template.redirects ) {
+							const redirectTitle = redirect.title;
+							const redirectName = redirectTitle.substring( redirectTitle.indexOf( ':' ) + 1 ); // Remove the namespace
+							ProveIt.templateAliases[ redirectName ] = templateName;
+						}
+					}
+				}
 
-		// Build the footer
-		var $footer = $( '#proveit-footer' ),
-			$insertButton = $( '<button>' ).attr( 'id', 'proveit-insert-button' ).text( mw.message( 'proveit-insert-button' ) ).on( 'click', object, ProveIt.insert ).addClass( 'progressive' ),
-			$updateButton = $( '<button>' ).attr( 'id', 'proveit-update-button' ).text( mw.message( 'proveit-update-button' ) ).on( 'click', object, ProveIt.update ).addClass( 'progressive' ),
-			$removeButton = $( '<button>' ).attr( 'id', 'proveit-remove-button' ).text( mw.message( 'proveit-remove-button' ) ).on( 'click', object, ProveIt.remove );
-		$footer.empty();
+				// Load WikitextParser.js
+				// See https://www.mediawiki.org/wiki/WikitextParser.js
+				this.logo = '...'; // Indicate progress
+				await mw.loader.getScript( '//www.mediawiki.org/w/index.php?title=MediaWiki:Gadget-Global-WikitextParser.js&action=raw&ctype=text/javascript' );
 
-		// Add the Insert button or the Remove and Update buttons
-		if ( ProveIt.getWikitext().indexOf( object.wikitext ) === -1 ) {
-			$footer.append( $insertButton );
-		} else {
-			$footer.append( $removeButton, $updateButton );
-		}
+				// Get the translations if the user prefers a language other than English
+				const userLanguage = mw.config.get( 'wgUserLanguage' );
+				if ( userLanguage !== 'en' ) {
+					try {
+						this.logo = '....'; // Indicate progress
+						const response3 = await $.get( '//gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/gadgets/ProveIt/+/master/i18n/' + userLanguage + '.json?format=text' );
+						const json = decodeURIComponent( window.atob( response3 ).split( '' ).map( ( character ) => '%' + ( '00' + character.charCodeAt( 0 ).toString( 16 ) ).slice( -2 ) ).join( '' ) ); // Decode base64 string
+						const translations = JSON.parse( json );
+						delete translations[ '@metadata' ];
+						for ( const key in translations ) {
+							ProveIt.messages[ key ] = translations[ key ];
+						}
+					} catch ( error ) {
+						// If something goes wrong we naturally fallback to English, see https://phabricator.wikimedia.org/T394916
+					}
+				}
+				this.messages = ProveIt.messages;
+				mw.messages.set( ProveIt.messages );
 
-		// Add the relevant fields and buttons
-		if ( object instanceof ProveIt.Reference ) {
-			ProveIt.buildReferenceFields( object );
-			ProveIt.buildTemplateFields( object.template );
-		} else {
-			ProveIt.buildTemplateFields( object );
-		}
-	},
+				// Finish
+				this.loaded = true;
+			},
 
-	/**
-	 * Build the reference fields and add them to the form
-	 *
-	 * @param {ProveIt.Reference} reference Reference object to fill the fields
-	 */
-	buildReferenceFields: function ( reference ) {
-		var $fields = $( '<div>' ).attr( 'id', 'proveit-reference-fields' ),
-			$label, $input, $div;
+			async back() {
+				// Prompt the user to confirm when leaving without saving (T148211)
+				const object = this.form.object;
+				if ( object.wikitext !== object.toWikitext() ) {
+					const confirm = await OO.ui.confirm( mw.msg( 'proveit-back-confirm' ) );
+					if ( !confirm ) {
+						return;
+					}
+				}
+				this.viewList();
+			},
 
-		// Add the reference name field
-		$label = $( '<label>' ).text( mw.message( 'proveit-reference-name-label' ) );
-		$input = $( '<input>' ).attr( 'id', 'proveit-reference-name' ).val( reference.name );
-		$div = $( '<div>' ).append( $label, $input );
-		$fields.append( $div );
+			async normalize() {
 
-		// Add the reference group field
-		$label = $( '<label>' ).text( mw.message( 'proveit-reference-group-label' ) );
-		$input = $( '<input>' ).attr( 'id', 'proveit-reference-group' ).val( reference.group );
-		$div = $( '<div>' ).append( $label, $input );
-		$fields.append( $div );
+				// Inform users about normalization, but only once
+				const cookie = ProveIt.getCookie( 'normalize-confirm' );
+				if ( !cookie ) {
+					const confirm = await OO.ui.confirm( mw.msg( 'proveit-normalize-confirm' ) );
+					if ( confirm ) {
+						ProveIt.setCookie( 'normalize-confirm', 1 );
+					} else {
+						return;
+					}
+				}
 
-		// Add the reference content field
-		$label = $( '<label>' ).text( mw.message( 'proveit-reference-content-label' ) );
-		$input = $( '<textarea>' ).attr( 'id', 'proveit-reference-content' ).val( reference.content );
-		$div = $( '<div>' ).append( $label, $input );
-		$fields.append( $div );
+				// Normalize the wikitext of all objects
+				let pageWikitext = ProveIt.getWikitext();
+				for ( const object of this.list ) {
+					const oldWikitext = object.wikitext;
+					const newWikitext = object.toWikitext();
+					pageWikitext = pageWikitext.replace( oldWikitext, newWikitext );
+					object.wikitext = newWikitext;
+				}
+				$( '#wpTextbox1' ).textSelection( 'setContents', pageWikitext );
 
-		// When the reference content changes, update the template fields
-		$input.on( 'change', function () {
-			var content = $( this ).val(),
-				dummy = new ProveIt.Reference( '<ref>' + content + '</ref>' );
-			ProveIt.buildTemplateFields( dummy.template );
-		} );
+				this.addSummary();
+				mw.track( 'stats.mediawiki_gadget_proveit_total', 1, { action: 'normalize' } );
+			},
 
-		// Add the fields to the form
-		$( '#proveit-reference-fields' ).remove();
-		$( '#proveit-form' ).prepend( $fields );
+			insert() {
+				const object = this.form.object;
+				const wikitext = object.toWikitext();
+				const index = $( '#wpTextbox1' ).textSelection( 'getCaretPosition' );
+				$( '#wpTextbox1' ).textSelection( 'replaceSelection', wikitext );
+				object.wikitext = wikitext;
+				object.index = index;
+				this.highlight( object );
+				this.addSummary();
+				this.toggle(); // T404063
+				mw.track( 'stats.mediawiki_gadget_proveit_total', 1, { action: 'insert' } );
+			},
 
-		// Add the footer buttons
-		var $buttons = $( '<span>' ).attr( 'id', 'proveit-reference-buttons' ),
-			$citeButton = $( '<button>' ).attr( 'id', 'proveit-cite-button' ).text( mw.message( 'proveit-cite-button' ) ).on( 'click', reference, reference.cite );
-		$buttons.append( $citeButton );
-		$( '#proveit-reference-buttons' ).remove();
-		$( '#proveit-footer' ).prepend( $buttons );
-	},
+			update() {
+				let pageWikitext = ProveIt.getWikitext();
 
-	/**
-	 * Build the fields for the template parameters and add them to the reference form
-	 *
-	 * @param {ProveIt.Template} template Template object to fill the fields, if any
-	 */
-	buildTemplateFields: function ( template ) {
-		var $fields = $( '<div>' ).attr( 'id', 'proveit-template-fields' ),
-			$label, $input, $option, $button, $div;
+				// Update any reuses and subrefs
+				const object = this.form.object;
+				if ( object.type === 'reference' && object.content ) {
+					const reference = object;
+					const oldReference = new ProveIt.Reference( reference.wikitext );
+					if ( reference.name !== oldReference.name ) {
+						for ( const reuse of reference.reuses ) {
+							reuse.name = reference.name;
+							pageWikitext = pageWikitext.replace( reuse.wikitext, reuse.toWikitext() );
+						}
+						for ( const subref of reference.subrefs ) {
+							subref.extends = reference.name;
+							pageWikitext = pageWikitext.replace( subref.wikitext, subref.toWikitext() );
+						}
+					}
+				}
 
-		// Add the template select menu
-		$label = $( '<label>' ).text( mw.message( 'proveit-reference-template-label' ) );
-		$input = $( '<select>' ).attr( 'id', 'proveit-template-select' );
-		$div = $( '<div>' ).append( $label, $input );
-		$fields.append( $div );
+				// Update the wikitext
+				const oldWikitext = object.wikitext;
+				const newWikitext = object.toWikitext();
+				pageWikitext = pageWikitext.replace( oldWikitext, newWikitext );
+				const start = pageWikitext.indexOf( newWikitext );
+				const end = start + newWikitext.length;
+				$( '#wpTextbox1' )
+					.textSelection( 'setContents', pageWikitext )
+					.textSelection( 'setSelection', { start: start, end: end } )
+					.textSelection( 'scrollToCaretPosition' );
+				object.wikitext = newWikitext;
 
-		// Add the empty option
-		$option = $( '<option>' ).text( mw.message( 'proveit-no-template' ) ).val( '' );
-		$input.append( $option );
+				this.addSummary();
+				mw.track( 'stats.mediawiki_gadget_proveit_total', 1, { action: 'update' } );
+			},
 
-		// Add an option for each template
-		var templateNames = Object.keys( ProveIt.templateData ).sort();
-		templateNames.forEach( function ( templateName ) {
-			if ( typeof ProveIt.templateData[ templateName ] === 'string' ) {
-				return;
-			}
-			$option = $( '<option>' ).text( templateName ).val( templateName );
-			if ( template.name === templateName ) {
-				$option.prop( 'selected', true );
-			}
-			$input.append( $option );
-		} );
+			async remove() {
+				const object = this.form.object;
+				let pageWikitext = ProveIt.getWikitext();
 
-		// When the template select changes, update the template fields
-		$input.on( 'change', template, function ( event ) {
-			var template = event.data;
-			template.name = $( this ).val();
-			template.data = template.getData();
-			template.params = template.getParams();
-			template.paramOrder = template.getParamOrder();
-			mw.cookie.set( 'proveit-last-template', template.name ); // Remember the new choice
-			ProveIt.buildTemplateFields( template );
-		} );
+				// Remove any reuses and subrefs
+				if ( object.type === 'reference' && object.name && object.content ) {
+					const reuses = object.getReuses();
+					const subrefs = object.getSubrefs();
+					if ( ( reuses.length || subrefs.length ) && await OO.ui.confirm( mw.msg( 'proveit-remove-confirm' ) ) ) {
+						for ( const reuse of reuses ) {
+							pageWikitext = pageWikitext.replace( reuse.wikitext, '' );
+						}
+						for ( const subref of subrefs ) {
+							pageWikitext = pageWikitext.replace( subref.wikitext, '' );
+						}
+					}
+				}
 
-		if ( 'maps' in template.data && 'citoid' in template.data.maps ) {
+				// Remove the wikitext
+				pageWikitext = pageWikitext.replace( object.wikitext, '' );
+				$( '#wpTextbox1' )
+					.textSelection( 'setContents', pageWikitext )
+					.textSelection( 'setSelection', { start: object.index } )
+					.textSelection( 'scrollToCaretPosition' );
 
-			// Add the Citoid field
-			$button = $( '<button>' ).text( mw.message( 'proveit-citoid-load' ) );
-			$label = $( '<label>' ).text( mw.message( 'proveit-citoid-label' ) ).attr( 'data-tooltip', mw.message( 'proveit-citoid-tooltip' ) );
-			$input = $( '<input>' ).attr( 'placeholder', mw.message( 'proveit-citoid-placeholder' ) );
-			$div = $( '<div>' ).append( $button, $label, $input );
-			$fields.append( $div );
+				this.addSummary();
+				this.viewList();
+				mw.track( 'stats.mediawiki_gadget_proveit_total', 1, { action: 'remove' } );
+			},
 
-			// When the Citoid button is clicked, try to extract the reference data automatically via the Citoid service
-			$button.on( 'click', function () {
-				var $button = $( this ),
-					query = $button.siblings( 'input' ).val();
-
-				// We need a query
-				if ( !query ) {
+			reuse() {
+				const reference = this.form.object;
+				if ( !reference.name ) {
+					this.form.referenceNameStatus = 'warning';
+					this.form.referenceNameMessages = { warning: mw.msg( 'proveit-reference-name-required' ) };
+					document.getElementById( 'reference-name-field' ).querySelector( 'input' ).focus();
 					return;
 				}
 
-				// Show the loading message
-				$button.text( mw.message( 'proveit-citoid-loading' ) ).prop( 'disabled', true );
+				// Insert the new reuse
+				const reuse = new ProveIt.Reference( '<ref />' );
+				reuse.name = reference.name;
+				reuse.group = reference.group;
+				reuse.index = $( '#wpTextbox1' ).textSelection( 'getCaretPosition' );
+				reuse.wikitext = reuse.toWikitext();
+				$( '#wpTextbox1' ).textSelection( 'replaceSelection', reuse.wikitext );
 
-				// Get the data
-				var contentLanguage = mw.config.get( 'wgContentLanguage' );
-				$.get( '//' + contentLanguage + '.wikipedia.org/api/rest_v1/data/citation/mediawiki/' + encodeURIComponent( query ) ).done( function ( data ) {
+				reference.reuses.push( reuse );
 
-					// Recursive helper function
-					function setParamValue( paramName, paramValue ) {
-						if ( typeof paramName === 'string' && typeof paramValue === 'string' ) {
-							$( '.proveit-template-param [name="' + paramName + '"]' ).val( paramValue );
-						} else if ( paramName instanceof Array && paramValue instanceof Array ) {
-							for ( var i in paramName ) {
-								setParamValue( paramName[ i ], paramValue[ i ] );
+				this.highlight( reuse );
+				this.addSummary();
+				mw.track( 'stats.mediawiki_gadget_proveit_total', 1, { action: 'reuse' } );
+			},
+
+			async generate( event ) {
+				this.form.generateStatus = 'default'; // Reset the status
+
+				// Make sure there's some input
+				const input = this.form.generateInput;
+				if ( !input ) {
+					return;
+				}
+
+				// Define this recursive helper function
+				function setParamValue( template, paramName, paramValue ) {
+					if ( typeof paramName === 'string' && typeof paramValue === 'string' ) {
+						template.params[ paramName ] = paramValue.replaceAll( '|', '{{!}}' ); // Escape pipes
+					} else if ( paramName instanceof Array && paramValue instanceof Array ) {
+						for ( const index in paramName ) {
+							setParamValue( template, paramName[ index ], paramValue[ index ] );
+						}
+					}
+				}
+
+				// URLs, DOIs, ISBNs and PMC/PMIDs don't contain spaces
+				// so if a space is found, it may be plain-text citation
+				let template;
+				if ( input.includes( ' ' ) ) {
+
+					let templateName;
+					if ( 'Citation' in ProveIt.templateData ) {
+						templateName = 'Citation';
+					} else if ( 'Citation' in ProveIt.templateAliases ) {
+						templateName = ProveIt.templateAliases.Citation;
+					} else {
+						templateName = Object.keys( ProveIt.templateData )[ 0 ]; // Use the first template and hope for the best
+					}
+					template = new ProveIt.Template( '{{' + templateName + '}}' );
+
+					// Build the wikitext
+					let match;
+					for ( const citationPattern of ProveIt.citationPatterns ) {
+						match = input.match( citationPattern );
+						if ( match ) {
+							// Use the Citoid map to get the local parameter names and then set those parameters
+							const templateData = ProveIt.templateData[ templateName ];
+							const citoidMap = templateData.maps.citoid;
+							const last = citoidMap.author[ 0 ][ 1 ];
+							const first = citoidMap.author[ 0 ][ 0 ];
+							const date = citoidMap.date;
+							const title = citoidMap.title;
+							const pages = citoidMap.pages;
+							template.params[ last ] = match.groups.last;
+							template.params[ first ] = match.groups.first;
+							template.params[ date ] = match.groups.date;
+							template.params[ title ] = match.groups.title;
+							template.params[ pages ] = match.groups.pages;
+							break;
+						}
+					}
+
+					if ( !match ) {
+						this.form.generateStatus = 'warning';
+						this.form.generateMessages = { warning: mw.msg( 'proveit-generate-fail' ) };
+						return;
+					}
+
+				} else {
+
+					// Disable the button to prevent multiple clicks and hint the user that something is happening
+					const button = event.target;
+					button.textContent = mw.msg( 'proveit-generate-generating' );
+					button.disabled = true;
+
+					// Get the data
+					try {
+						const server = mw.config.get( 'wgServer' );
+						const response = await $.get( server + '/api/rest_v1/data/citation/mediawiki/' + encodeURIComponent( input ) );
+						const citoidData = response[0];
+
+						// Get the template map
+						const rest = new mw.Rest();
+						const templateMapResponse = await rest.get( '/v1/page/MediaWiki:Citoid-template-type-map.json' );
+						const templateMap = templateMapResponse.source && JSON.parse( templateMapResponse.source );
+
+						// Set the template name
+						const templateName = templateMap[ citoidData.itemType ];
+						if ( !templateName ) {
+							throw new Error();
+						}
+						template = new ProveIt.Template( '{{' + templateName + '}}' );
+
+						// T404064
+						if ( citoidData.date ) {
+							citoidData.date = this.normalizeDate( citoidData.date );
+						}
+
+						// Set the template params
+						const templateData = template.getTemplateData();
+						const citoidMap = templateData.maps.citoid;
+						for ( const citoidKey in citoidData ) {
+							const paramName = citoidMap[ citoidKey ];
+							const paramValue = citoidData[ citoidKey ];
+							setParamValue( template, paramName, paramValue );
+						}
+
+						// Reset the button
+						button.textContent = mw.msg( 'proveit-generate-button' );
+						button.disabled = false;
+
+					} catch ( error ) {
+						this.form.generateStatus = 'warning';
+						this.form.generateMessages = { warning: error.responseJSON.error };
+						button.textContent = mw.msg( 'proveit-generate-button' );
+						button.disabled = false;
+						return;
+					}
+				}
+
+				// Update the form
+				const object = this.form.object;
+				if ( object.type === 'reference' ) {
+					const oldTemplate = object.getTemplate();
+					const oldTemplateWikitext = oldTemplate ? oldTemplate.wikitext : '';
+					const newTemplateWikitext = template.toWikitext();
+					object.content = object.content.replace( oldTemplateWikitext, newTemplateWikitext );
+					object.template = template;
+				} else {
+					object.name = template.name;
+					object.params = template.params;
+				}
+				this.form.templateSelected = template.name;
+				this.form.templateFields = template.getFields();
+				mw.track( 'stats.mediawiki_gadget_proveit_total', 1, { action: 'generate' } );
+			},
+
+			highlight( object ) {
+				let start = object.index;
+				let end = start + object.wikitext.length;
+
+				// Check if the object moved, and if it did, try to guess where
+				// (this guess will fail when multiple objects have identical wikitext)
+				const pageWikitext = ProveIt.getWikitext();
+				if ( pageWikitext.substring( start, end ) !== object.wikitext ) {
+					start = pageWikitext.indexOf( object.wikitext );
+					end = start + object.wikitext.length;
+				}
+
+				$( '#wpTextbox1' )
+					.trigger( 'focus' ) // Required by WikiEditor
+					.textSelection( 'setSelection', { start: start, end: end } )
+					.textSelection( 'scrollToCaretPosition' );
+			},
+
+			addReference() {
+				const templateSelected = ProveIt.getCookie( 'template-selected' ); // Remember the last choice
+				const referenceWikitext = templateSelected ? '<ref>{{' + templateSelected + '}}</ref>' : '<ref></ref>';
+				const reference = new ProveIt.Reference( referenceWikitext );
+				this.viewForm( reference );
+			},
+
+			addTemplate() {
+				const templateSelected = ProveIt.getCookie( 'template-selected' ); // Remember the last choice
+				const templateWikitext = templateSelected ? '{{' + templateSelected + '}}' : '';
+				const template = new ProveIt.Template( templateWikitext );
+				this.viewForm( template );
+			},
+
+			viewList() {
+				const list = [];
+				let pageWikitext = ProveIt.getWikitext();
+
+				// Get the references
+				for ( const referenceWikitext of WikitextParser.getReferences( pageWikitext ) ) {
+					const referenceIndex = pageWikitext.indexOf( referenceWikitext );
+					const reference = new ProveIt.Reference( referenceWikitext, referenceIndex );
+					if ( reference.extends ) {
+						continue;
+					}
+					reference.reuses.forEach( ( reuse, index ) => reuse.letter = String.fromCharCode( 98 + index ) ); // 98 is the ASCII code for 'b', 99 for 'c', etc
+					list.push( reference );
+
+					// Replace the reference for a string of '@' of the same length
+					// so we don't match its templates below and don't screw up indexes either
+					pageWikitext = pageWikitext.replace( referenceWikitext, '@'.repeat( referenceWikitext.length ) );
+				}
+
+				// Get the citation templates
+				let templateIndexOffset = 0;
+				for ( const templateWikitext of WikitextParser.getTemplates( pageWikitext ) ) {
+					const templateName = WikitextParser.getTemplateName( templateWikitext );
+					const templateNameNormalized = ProveIt.normalizeTemplateName( templateName );
+					if ( templateNameNormalized in ProveIt.templateData ) {
+						const templateIndex = pageWikitext.indexOf( templateWikitext, templateIndexOffset );
+						const template = new ProveIt.Template( templateWikitext, templateIndex );
+						list.push( template );
+						templateIndexOffset = templateIndex + templateWikitext.length;
+					}
+				}
+
+				// Get the plain-text citations
+				let citationIndexOffset = 0;
+				for ( const listWikitext of WikitextParser.getLists( pageWikitext ) ) {
+					for ( const itemWikitext of WikitextParser.getListItems( listWikitext ) ) {
+						for ( const citationPattern of ProveIt.citationPatterns ) {
+							const citationMatch = itemWikitext.match( citationPattern );
+							if ( citationMatch ) {
+								const citationWikitext = citationMatch[0];
+								const citationIndex = pageWikitext.indexOf( citationWikitext, citationIndexOffset );
+								const citation = new ProveIt.Template( citationWikitext, citationIndex );
+								list.push( citation );
+								citationIndexOffset = citationIndex + citationWikitext.length;
+								break;
 							}
 						}
 					}
-
-					// Fill the template fields
-					var citoidMap = template.data.maps.citoid,
-						citoidData = data[ 0 ],
-						paramName, paramValue;
-					for ( var citoidKey in citoidData ) {
-						paramName = citoidMap[ citoidKey ];
-						paramValue = citoidData[ citoidKey ];
-						setParamValue( paramName, paramValue );
-					}
-
-					// Reset the button
-					$button.text( mw.message( 'proveit-citoid-load' ) ).prop( 'disabled', false );
-
-					// Update the reference content too
-					if ( $( '#proveit-reference-content' ).length ) {
-						var content = $( '#proveit-reference-content' ).val(),
-							dummy = new ProveIt.Reference( '<ref>' + content + '</ref>' );
-						content = dummy.buildContent();
-						$( '#proveit-reference-content' ).val( content );
-					}
-
-				// @todo For some reason this isn't firing
-				} ).fail( function () {
-					$button.text( mw.message( 'proveit-citoid-error' ) );
-					setTimeout( function () {
-						$button.text( mw.message( 'proveit-citoid-load' ) ).prop( 'disabled', false );
-					}, 3000 );
-				} );
-			} );
-		}
-
-		// Add a field for each parameter
-		var userLanguage = mw.config.get( 'wgUserLanguage' ),
-			contentLanguage = mw.config.get( 'wgContentLanguage' ),
-			paramData, labelText, labelTooltip, inputValue, inputPlaceholder;
-		template.paramOrder.forEach( function ( inputName ) {
-
-			// Reset defaults
-			paramData = {
-				label: null,
-				description: null,
-				required: false,
-				suggested: false,
-				deprecated: false
-			};
-			labelText = inputName;
-			labelTooltip = null;
-			inputValue = null;
-			inputPlaceholder = null;
-
-			// Override with template data
-			if ( 'params' in template.data && inputName in template.data.params ) {
-				paramData = template.data.params[ inputName ];
-			}
-			if ( paramData.label ) {
-				if ( userLanguage in paramData.label ) {
-					labelText = paramData.label[ userLanguage ];
-				} else if ( contentLanguage in paramData.label ) {
-					labelText = paramData.label[ contentLanguage ];
 				}
-			}
-			if ( paramData.description ) {
-				if ( userLanguage in paramData.description ) {
-					labelTooltip = paramData.description[ userLanguage ];
-				} else if ( contentLanguage in paramData.description ) {
-					labelTooltip = paramData.description[ contentLanguage ];
+
+				// Sort the items by their order of appearance in the page wikitext
+				list.sort( ( item1, item2 ) => item1.index - item2.index );
+
+				this.list = list;
+				this.form = null;
+			},
+
+			viewForm( object, index ) {
+				if ( object.index !== undefined ) {
+					this.highlight( object );
 				}
-			}
 
-			// Extract the parameter value
-			if ( inputName in template.params ) {
-				inputValue = template.params[ inputName ];
-			} else if ( paramData.aliases ) {
-				paramData.aliases.forEach( function ( paramAlias ) {
-					if ( paramAlias in template.params ) {
-						inputValue = template.params[ paramAlias ];
-						return;
-					}
-				} );
-			}
+				// Set the selected template
+				let templateSelected;
+				if ( object.type === 'reference' && object.template ) {
+					templateSelected = object.template.name;
+				} else if ( object.type === 'template' ) {
+					templateSelected = object.name;
+				}
 
-			// Build the label, input and div
-			$label = $( '<label>' ).text( labelText );
-			if ( labelTooltip ) {
-				$label.attr( 'data-tooltip', labelTooltip );
-			}
-			$input = paramData.type === 'content' ? $( '<textarea>' ) : $( '<input>' );
-			$input.val( inputValue ).attr( {
-				name: inputName,
-				placeholder: inputPlaceholder
-			} );
-			$div = $( '<div>' ).addClass( 'proveit-template-param' ).append( $label, $input );
+				// Set the template options
+				let templateOptions = Object.keys( ProveIt.templateData );
+				// When editing a reference, exclude templates that shouldn't go inside <ref> tags
+				const templatesNoRef = mw.config.get( 'proveit-templates-noref' );
+				if ( object.type === 'reference' && templatesNoRef ) {
+					templateOptions = templateOptions.filter( ( templateName ) => !templatesNoRef.includes( templateName ) );
+				}
+				// Sort alphabetically (case-insensitive)
+				const contentLanguage = mw.config.get( 'wgContentLanguage' );
+				templateOptions.sort( ( a, b ) => a.localeCompare( b, contentLanguage, { sensitivity: 'base' } ) );
+				// If the main template is not found, put it first
+				if ( templateSelected && !( templateSelected in ProveIt.templateData ) ) {
+					templateOptions.unshift( templateSelected );
+				}
+				templateOptions = templateOptions.map( ( templateName ) => ( { value: templateName } ) );
 
-			// If the parameter is of the page type, search the wiki
-			if ( paramData.type === 'wiki-page-name' ) {
-				$input.attr( 'list', inputName + '-list' );
-				var $list = $( '<datalist>' ).attr( 'id', inputName + '-list' );
-				$div.prepend( $list );
-				$input.on( 'keyup', function () {
-					var search = $( this ).val();
-					new mw.Api().get( {
-						action: 'opensearch',
-						search: search,
-						limit: 5,
-						redirects: 'resolve',
-						format: 'json',
-						formatversion: 2
-					} ).done( function ( data ) {
-						$list.empty();
-						var titles = data[ 1 ];
-						titles.forEach( function ( title ) {
-							var $option = $( '<option>' ).val( title );
-							$list.append( $option );
-						} );
-					} );
-				} );
-			}
-			// If the parameter is of the URL type, add the Archive button
-			if ( paramData.type === 'url' ) {
-				$button = $( '<button>' ).text( mw.message( 'proveit-archive-button' ) );
-				$div.prepend( $button );
-				$button.on( 'click', $input, function ( event ) {
-					var url = event.data.val().trim();
-					if ( !url ) {
-						return;
-					}
-					var $button = $( this );
-					$button.text( mw.message( 'proveit-archive-fetching' ) ).prop( 'disabled', true );
-					$.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( url ) ).done( function ( data ) {
-						if ( data.archived_snapshots.closest ) {
-							var snapshot = data.archived_snapshots.closest;
-							var archive = snapshot.url.replace( /^http:\/\//, 'https://' );
-							OO.ui.alert( archive, { size: 'large', title: mw.message( 'proveit-archive-title' ).text() } );
-						} else {
-							OO.ui.alert( mw.message( 'proveit-archive-no-url' ).text() );
+				// Set the template fields
+				let templateFields;
+				if ( object.type === 'reference' && object.template ) {
+					templateFields = object.template.getFields();
+				} else if ( object.type === 'template' ) {
+					templateFields = object.getFields();
+				}
+
+				// Set the input to generate an automatic citation
+				let generateInput;
+				const input = object.type === 'reference' ? object.content : object.wikitext;
+				if ( input.includes( ' ' ) ) {
+					for ( const citationPattern of ProveIt.citationPatterns ) {
+						if ( citationPattern.test( input ) ) {
+							generateInput = input;
+							break;
 						}
-					} ).fail( function () {
-						OO.ui.alert( mw.message( 'proveit-archive-error' ).text() );
-					} ).always( function () {
-						$button.text( mw.message( 'proveit-archive-button' ) ).prop( 'disabled', false );
-					} );
-				} );
-			}
-
-			// If the parameter is of the date type, add the Today button
-			if ( paramData.type === 'date' ) {
-				$button = $( '<button>' ).text( mw.message( 'proveit-today-button' ) );
-				$div.prepend( $button );
-				$button.on( 'click', $input, function ( event ) {
-					var input = event.data,
-						date = new Date(),
-						yyyy = date.getFullYear(),
-						mm = ( '0' + ( date.getMonth() + 1 ) ).slice( -2 ),
-						dd = ( '0' + date.getDate() ).slice( -2 );
-					input.val( yyyy + '-' + mm + '-' + dd );
-				} );
-			}
-
-			// Mark the div according to the parameter status
-			if ( paramData.required ) {
-				$div.addClass( 'proveit-required' );
-			} else if ( paramData.suggested ) {
-				$div.addClass( 'proveit-suggested' );
-			} else if ( paramData.deprecated ) {
-				$div.addClass( 'proveit-deprecated' );
-			} else {
-				$div.addClass( 'proveit-optional' );
-			}
-
-			// Hide all optional and deprecated parameters, unless they are filled
-			if ( !inputValue && ( $div.hasClass( 'proveit-optional' ) || $div.hasClass( 'proveit-deprecated' ) ) ) {
-				$div.hide();
-			}
-
-			// Add the div to the table
-			$fields.append( $div );
-		} );
-
-		// Some reference templates may have no template data
-		if ( !template.data || 'notemplatedata' in template.data ) {
-			$div = $( '<div>' ).attr( 'id', 'proveit-no-template-data-message' ).text( mw.message( 'proveit-no-template-data' ) );
-			$fields.append( $div );
-		}
-
-		// Add the fields to the form
-		$( '#proveit-template-fields' ).remove();
-		$( '#proveit-form' ).append( $fields );
-
-		// Add the footer buttons
-		var $buttons = $( '<span>' ).attr( 'id', 'proveit-template-buttons' ),
-			$filterFields = $( '<input>' ).attr( 'placeholder', mw.message( 'proveit-filter-fields' ) ),
-			$showAllButton = $( '<button>' ).attr( 'id', 'proveit-show-all-button' ).text( mw.message( 'proveit-show-all-button' ) );
-		if ( template.paramOrder.length ) {
-			$buttons.append( $filterFields );
-		}
-		if ( $( '.proveit-required, .proveit-suggested' ).length && $( '.proveit-deprecated, .proveit-optional' ).length ) {
-			$buttons.append( $showAllButton );
-		} else {
-			$( '.proveit-deprecated, .proveit-optional' ).show();
-		}
-		$( '#proveit-template-buttons' ).remove();
-		$( '#proveit-footer' ).prepend( $buttons );
-
-		// Bind events
-		$showAllButton.on( 'click', function () {
-			$( '.proveit-deprecated, .proveit-optional' ).show();
-			$( this ).remove();
-		} );
-		$filterFields.on( 'keyup', function () {
-			var filter = $( this ).val().toLowerCase();
-			$( 'div', $fields ).show().filter( function () {
-				return $( this ).text().toLowerCase().indexOf( filter ) === -1;
-			} ).hide();
-			$( '#proveit-show-all-button' ).remove();
-		} );
-
-		// When a template parameter changes, update the reference content
-		if ( $( '#proveit-reference-content' ).length ) {
-			$( 'select, input, textarea', '#proveit-template-fields' ).on( 'change', function () {
-				var content = $( '#proveit-reference-content' ).val(),
-					dummy = new ProveIt.Reference( '<ref>' + content + '</ref>' );
-				content = dummy.buildContent();
-				$( '#proveit-reference-content' ).val( content );
-			} );
-		}
-	},
-
-	/**
-	 * Parse the given wikitext in search for references and return an array of Reference objects
-	 *
-	 * @param {string} wikitext
-	 * @return {ProveIt.Reference[]} Array of Reference objects
-	 */
-	getReferences: function ( wikitext ) {
-		var references = [],
-			matches = wikitext.match( /<\s*ref[^>]*>[^<]*<\s*\/\s*ref\s*>/ig );
-		if ( matches ) {
-			matches.forEach( function ( match ) {
-				var reference = new ProveIt.Reference( match );
-				references.push( reference );
-			} );
-		}
-		return references;
-	},
-
-	/**
-	 * Parse the given wikitext in search for templates and return an array of Template objects
-	 *
-	 * @param {string} wikitext
-	 * @return {ProveIt.Template[]} Array of Template objects
-	 */
-	getTemplates: function ( wikitext ) {
-		var templates = [],
-			templateName, templateRegex, templateMatch, templateWikitext, templateStart, templateEnd, templateDepth, template;
-
-		for ( templateName in ProveIt.templateData ) {
-			templateRegex = new RegExp( '{{\\s*' + templateName + '\\s*[|}]', 'ig' );
-			while ( ( templateMatch = templateRegex.exec( wikitext ) ) !== null ) {
-				templateWikitext = templateMatch[ 0 ];
-				templateStart = templateMatch.index;
-				// Figure out the templateEnd by searching for the closing "}}"
-				// knowing that there may be subtemplates, like so:
-				// {{Cite book |title=Foo |year={{BC|123}} |author=Bar}}
-				templateEnd = wikitext.length;
-				templateDepth = 0;
-				for ( var i = templateStart; i < templateEnd; i++ ) {
-					if ( wikitext[ i ] + wikitext[ i + 1 ] === '{{' ) {
-						templateDepth++;
-						i++; // We speed up the loop to avoid multiple matches when two or more templates are found together
-					} else if ( wikitext[ i ] + wikitext[ i + 1 ] === '}}' ) {
-						templateDepth--;
-						i++;
 					}
-					if ( templateDepth === 0 ) {
-						templateEnd = i + 1;
-						break;
-					}
+				} else if ( !/^{{.+}}$/.test( input ) ) {
+					generateInput = input;
 				}
-				templateWikitext = wikitext.substring( templateStart, templateEnd );
-				template = new ProveIt.Template( templateWikitext );
-				templates.push( template );
-			}
-		}
-		return templates;
-	},
 
-	/**
-	 * Add the ProveIt revision tag
-	 */
-	addTag: function () {
-		var tag = mw.config.get( 'proveit-tag' );
-		if ( !tag ) {
-			return; // No tag defined
-		}
-		switch ( ProveIt.getEditor() ) {
-			case 'core':
-			case 'wikieditor':
-			case 'codemirror':
-				var $tagInput = $( '#wpChangeTags' );
-				// Don't add it twice
-				if ( !$tagInput.data( 'proveit' ) ) {
-					if ( $tagInput.length ) {
-						$tagInput.val( $tagInput.val() + ',' + tag );
-					} else {
-						$tagInput = $( '<input>' ).attr( {
-							id: 'wpChangeTags',
-							type: 'hidden',
-							name: 'wpChangeTags',
-							value: tag
-						} );
-						$( '#editform' ).prepend( $tagInput );
-					}
-					$tagInput.data( 'proveit', true );
-				}
-				break;
-
-			case '2017':
-				ve.init.target.saveFields.wpChangeTags = function () {
-					return tag;
+				this.form = {
+					object: object,
+					index: index,
+					generateInput: generateInput,
+					templateOptions: templateOptions,
+					templateSelected: templateSelected,
+					templateFields: templateFields
 				};
-				break;
-		}
-	},
+			},
 
-	/**
-	 * Add the ProveIt edit summary
-	 */
-	addSummary: function () {
-		var proveitSummary = mw.config.get( 'proveit-summary' );
-		if ( !proveitSummary ) {
-			return; // No summary defined
-		}
-		proveitSummary += ' #proveit'; // For tracking via https://hashtags.wmcloud.org/
-		switch ( ProveIt.getEditor() ) {
-			case 'core':
-			case 'wikieditor':
-			case 'codemirror':
-				var $summaryTextarea = $( '#wpSummary' ),
-					currentSummary = $summaryTextarea.val();
-				if ( !currentSummary ) {
-					$summaryTextarea.val( proveitSummary );
+			previousItem() {
+				const index = this.form.index - 1;
+				const object = this.list[ index ];
+				this.viewForm( object, index );
+			},
+
+			nextItem() {
+				const index = this.form.index + 1;
+				const object = this.list[ index ];
+				this.viewForm( object, index );
+			},
+
+			filterList( event ) {
+				const input = event.target;
+				const filter = input.value.toLowerCase();
+				$( '#proveit-list' ).find( '.proveit-item' ).hide().filter( ( index, element ) => element.textContent.toLowerCase().includes( filter ) ).show();
+			},
+
+			filterFields( event ) {
+				const input = event.target;
+				const filter = input.value.toLowerCase();
+				$( '#proveit-form' ).find( '.cdx-field' ).hide().filter( ( index, element ) => element.textContent.toLowerCase().includes( filter ) ).show();
+			},
+
+			showAll( event ) {
+				const button = event.target;
+				button.remove();
+				for ( const field of this.form.templateFields ) {
+					field.visible = true;
 				}
-				break;
+			},
 
-			case '2017':
-				$( document ).on( 'focus', '.ve-ui-mwSaveDialog-summary textarea', function () {
-					var $summaryTextarea = $( this ),
-						currentSummary = $summaryTextarea.val();
-					if ( !currentSummary ) {
-						$summaryTextarea.val( proveitSummary );
-					}
+			// @todo Improve
+			async onWikiPageNameInput( value, field ) {
+				const response = await new mw.Api().get( {
+					action: 'opensearch',
+					search: value,
+					limit: 5,
+					redirects: 'resolve',
+					format: 'json',
+					formatversion: 2
 				} );
-				break;
-		}
-	},
+				field.suggestions = [];
+				const titles = response[ 1 ];
+				for ( const title of titles ) {
+					field.suggestions.push( { value: title } );
+				}
+			},
 
-	/**
-	 * Insert the given object in the wikitext
-	 *
-	 * @param {jQuery.Event|ProveIt.Reference|ProveIt.Template|ProveIt.Citation} object Reference, template or citation, or a jQuery event containing one
-	 */
-	insert: function ( object ) {
-		if ( object instanceof $.Event ) {
-			object = object.data;
-		}
+			async archiveURL( event, field ) {
+				field.status = 'default'; // Reset the status
 
-		var wikitext = object.buildWikitext();
+				// Make sure there's some input
+				const button = event.target;
+				const input = button.nextElementSibling.querySelector( 'input' );
+				const value = input.value;
+				if ( !value ) {
+					input.focus();
+					return;
+				}
 
-		if ( object instanceof ProveIt.Citation ) {
-			object.index = $( '#wpTextbox1' ).textSelection( 'getCaretPosition' );
-		}
-		$( '#wpTextbox1' ).textSelection( 'encapsulateSelection', {
-			peri: wikitext,
-			replace: true
-		} );
+				// Hint the user that something is happening and disable the button to prevent further clicks
+				button.textContent = mw.msg( 'proveit-archive-fetching' );
+				button.disabled = true;
 
-		if ( object instanceof ProveIt.Reference ) {
-			var reference = new ProveIt.Reference( wikitext );
-			ProveIt.buildForm( reference ); // Changes the Insert button for Update
-		}
-		if ( object instanceof ProveIt.Template ) {
-			var template = new ProveIt.Template( wikitext );
-			ProveIt.buildForm( template ); // Changes the Insert button for Update
-		}
-		ProveIt.addTag();
-		ProveIt.addSummary();
-	},
+				try {
+					const data = await $.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( value ) );
+					const snapshot = data.archived_snapshots.closest;
+					if ( snapshot ) {
+						field.status = 'success';
+						field.messages = { success: mw.msg( 'proveit-archive-success', snapshot.url ) };
+					} else {
+						field.status = 'warning';
+						field.messages = { warning: mw.msg( 'proveit-archive-not-found' ) };
+					}
+				} catch ( error ) {
+					field.status = 'warning';
+					field.messages = { warning: mw.msg( 'proveit-archive-error' ) };
+				}
 
-	/**
-	 * Update the given object in the wikitext
-	 *
-	 * @param {jQuery.Event|ProveIt.Reference|ProveIt.Template|ProveIt.Citation} object Reference, template or citation, or a jQuery event containing one
-	 */
-	update: function ( object ) {
-		if ( object instanceof $.Event ) {
-			object = object.data;
-		}
-		var wikitext = object.buildWikitext();
+				// Reset the button
+				button.textContent = mw.msg( 'proveit-archive-button' );
+				button.disabled = false;
+			},
 
-		// If the object is a reference, update the citations too
-		if ( object instanceof ProveIt.Reference ) {
-			object.citations.forEach( function ( citation ) {
-				ProveIt.update( citation );
-			} );
-		}
+			onTodayButtonClick( field ) {
+				const date = new Date();
+				const value = date.toString();
+				field.value = this.normalizeDate( value );
+				this.onTemplateFieldChange( field );
+			},
 
-		ProveIt.replace( object.wikitext, wikitext );
+			onNormalizeDateButtonClick( field ) {
+				field.value = this.normalizeDate( field.value );
+				this.onTemplateFieldChange( field );
+			},
 
-		object.wikitext = wikitext;
-		ProveIt.highlight( object );
-		ProveIt.addTag();
-		ProveIt.addSummary();
-	},
+			normalizeDate( value ) {
+				value = value.trim();
 
-	/**
-	 * Remove the given object from the wikitext
-	 *
-	 * @param {jQuery.Event|ProveIt.Reference|ProveIt.Template|ProveIt.Citation} object Reference, template or citation, or a jQuery event containing one
-	 */
-	remove: function ( object ) {
-		if ( object instanceof $.Event ) {
-			object = object.data;
-		}
+				// Wayback Machine and MediaWiki timestamps (T342221)
+				const match = value.match( /^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})\d{6}$/ );
+				if ( match ) {
+					value = match.year + '-' + match.month + '-' + match.day;
+				}
 
-		// If the object is a reference, remove the citations too
-		if ( object instanceof ProveIt.Reference && object.citations.length && confirm( mw.message( 'proveit-confirm-remove' ) ) ) {
-			object.citations.forEach( function ( citation ) {
-				ProveIt.remove( citation );
-			} );
-		}
+				// Return the date in the preferred format
+				const date = new Date( value );
+				const format = mw.config.get( 'proveit-date-format' );
+				if ( format ) {
+					format.timeZone = 'UTC'; // Force UTC
+					if ( /^\d{4}$/.test( value ) ) {
+						delete format.month;
+						delete format.day;
+					} else if ( /^\d{4}\D\d{2}$/.test( value ) ) {
+						delete format.day;
+					}
+					const contentLanguage = mw.config.get( 'wgContentLanguage' );
+					const formatter = new Intl.DateTimeFormat( contentLanguage, format );
+					return formatter.format( date );
 
-		ProveIt.replace( object.wikitext, '' );
+				// If no format is given, assume YYYY-MM-DD which is the preferred format by most wikis
+				} else {
+					const year = date.getUTCFullYear();
+					const month = ( date.getUTCMonth() + 1 ).toString().padStart( 2, '0' );
+					const day = date.getUTCDate().toString().padStart( 2, '0' );
+					if ( /^\d{4}$/.test( value ) ) {
+						return year;
+					} else if ( /^\d{4}\D\d{2}$/.test( value ) ) {
+						return year + '-' + month;
+					} else {
+						return year + '-' + month + '-' + day;
+					}
+				}
+			},
 
-		ProveIt.addTag();
-		ProveIt.addSummary();
-		ProveIt.buildList();
-	},
+			onReferenceNameChange() {
+				const reference = this.form.object;
+				if ( reference.name ) {
+					this.form.referenceNameStatus = 'default';
+				} else if ( reference.reuses.length || reference.subrefs.length ) {
+					this.form.referenceNameStatus = 'warning';
+					this.form.referenceNameMessages = { warning: mw.msg( 'proveit-reference-name-warning' ) };
+				}
+			},
 
-	/**
-	 * Highlight the given object in the wikitext
-	 *
-	 * @param {jQuery.Event|ProveIt.Reference|ProveIt.Template|ProveIt.Citation} object Reference, template or citation, or a jQuery event containing one
-	 */
-	highlight: function ( object ) {
-		if ( object instanceof $.Event ) {
-			object.stopPropagation();
-			object = object.data;
-		}
+			onReferenceContentChange() {
+				const reference = this.form.object;
+				reference.template = reference.getTemplate();
+				this.form.templateSelected = reference.template ? reference.template.name : null;
+				this.form.templateFields = reference.template ? reference.template.getFields() : null;
+			},
 
-		var wikitext = ProveIt.getWikitext(),
-			index = wikitext.indexOf( object.wikitext );
+			onTemplateSelect() {
+				const templateSelected = this.form.templateSelected;
+				ProveIt.setCookie( 'template-selected', templateSelected );
+				const object = this.form.object;
+				if ( object.type === 'reference' ) {
+					if ( object.template ) {
+						object.template.name = templateSelected;
+						const oldTemplate = object.getTemplate();
+						const oldTemplateWikitext = oldTemplate.wikitext;
+						const newTemplateWikitext = object.template.toWikitext();
+						object.content = object.content.replace( oldTemplateWikitext, newTemplateWikitext );
+					} else {
+						const newTemplateWikitext = '{{' + templateSelected + '}}';
+						object.content += newTemplateWikitext;
+						object.template = object.getTemplate();
+					}
+					this.form.templateFields = object.template.getFields();
+				} else {
+					object.name = templateSelected;
+					this.form.templateFields = object.getFields();
+				}
+			},
 
-		// Make sure we're highlighting the right occurrence
-		if ( object.index ) {
-			index = wikitext.indexOf( object.wikitext, object.index );
-		}
+			onTemplateFieldChange( field ) {
+				const object = this.form.object;
+				if ( object.type === 'reference' ) {
+					object.template.params[ field.name ] = field.value;
+					const oldTemplate = object.getTemplate();
+					const oldTemplateWikitext = oldTemplate.wikitext;
+					const newTemplateWikitext = object.template.toWikitext();
+					object.content = object.content.replace( oldTemplateWikitext, newTemplateWikitext );
+				} else {
+					object.params[ field.name ] = field.value;
+				}
+			},
 
-		$( '#wpTextbox1' )
-			// Focus for wikieditor
-			.trigger( 'focus' )
-			.textSelection( 'setSelection', {
-				start: index,
-				end: index + object.wikitext.length
-			} )
-			.textSelection( 'scrollToCaretPosition' );
-	},
+			/**
+			 * Add the ProveIt summary, hash and change tag
+			 * @todo Avoid jQuery?
+ 			 */
+			addSummary() {
+				const proveitTag = mw.config.get( 'proveit-tag' ); // For tracking via Special:Tags
+				const proveitHash = '#proveit'; // For tracking via https://hashtags.wmcloud.org
+				const proveitSummary = mw.config.get( 'proveit-summary' );
+				let $summary, summary;
+				switch ( ProveIt.getEditor() ) {
+					case 'core':
+					case 'wikieditor':
+					case 'codemirror':
+						$summary = $( '#wpSummary' );
+						summary = $summary.val().trim();
+						if ( summary ) {
+							if ( !summary.includes( proveitHash ) ) {
+								summary += ' ' + proveitHash;
+							}
+						} else {
+							summary = proveitSummary + ' ' + proveitHash;
+						}
+						$summary.val( summary );
+						if ( proveitTag ) {
+							let $tagInput = $( '#wpChangeTags' );
+							if ( $tagInput.length ) {
+								const tags = $tagInput.val();
+								if ( !tags.includes( proveitTag ) ) {
+									$tagInput.val( tags + ',' + proveitTag );
+								}
+							} else {
+								$tagInput = $( '<input>' ).attr( {
+									id: 'wpChangeTags',
+									type: 'hidden',
+									name: 'wpChangeTags',
+									value: proveitTag
+								} );
+								$( '#editform' ).prepend( $tagInput );
+							}
+						}
+						break;
 
-	/**
-	 * Helper function to search and replace a string in the editor (first match only)
-	 *
-	 * @param {string} search String to search
-	 * @param {string} replace Replacement string
-	 */
-	replace: function ( search, replace ) {
-		var wikitext = ProveIt.getWikitext(),
-			start = wikitext.indexOf( search );
-
-		if ( start !== -1 ) {
-			$( '#wpTextbox1' )
-				.textSelection( 'setSelection', {
-					start: start,
-					end: start + search.length
-				} )
-				.textSelection( 'replaceSelection', replace );
-		}
-	},
-
-	/**
-	 * Helper function to decode base64 strings
-	 *
-	 * @param {string} string Base64 encoded string
-	 * @return {string} Decoded string
-	 */
-	decodeBase64: function ( string ) {
-		return decodeURIComponent( window.atob( string ).split( '' ).map( function ( character ) {
-			return '%' + ( '00' + character.charCodeAt( 0 ).toString( 16 ) ).slice( -2 );
-		} ).join( '' ) );
-	},
-
-	/**
-	 * Citation class
-	 *
-	 * @class
-	 * @param {string} wikitext Citation wikitext
-	 * @param {number} index Citation index in the page wikitext
-	 */
-	Citation: function ( wikitext, index ) {
-
-		/**
-		 * Citation wikitext
-		 */
-		this.wikitext = wikitext;
-
-		/**
-		 * Citation index in the page wikitext
-		 */
-		this.index = index;
-
-		/**
-		 * Get the name out of the wikitext
-		 *
-		 * @return {string} citation name
-		 */
-		this.getName = function () {
-			// Match <ref name="Foo">, <ref name="Foo's">
-			var match = this.wikitext.match( /<\s*ref[^>]+name\s*=\s*"([^">]+)"[^>]*>/i );
-			if ( !match ) {
-				// Match <ref name='Foo'>, <ref name='The "Foo"'>
-				match = this.wikitext.match( /<\s*ref[^>]+name\s*=\s*'([^'>]+)'[^>]*>/i );
+					case 'source':
+						$( document ).on( 'focus', '.ve-ui-mwSaveDialog-summary textarea', function () {
+							$summary = $( this );
+							summary = $summary.val().trim();
+							if ( summary ) {
+								if ( !summary.includes( proveitHash ) ) {
+									summary += ' ' + proveitHash;
+								}
+							} else {
+								summary = proveitSummary + ' ' + proveitHash;
+							}
+							$summary.val( summary );
+						} );
+						if ( proveitTag ) {
+							ve.init.target.saveFields.wpChangeTags = () => {
+								return proveitTag;
+							};
+						}
+						break;
+				}
 			}
-			if ( !match ) {
-				// Match <ref name=Foo>, <ref name=Foo's> and <ref name=The"Foo">
-				match = this.wikitext.match( /<\s*ref[^>]+name\s*=\s*([^ >]+)[^>]*>/i );
-			}
-			if ( match ) {
-				return match[ 1 ];
-			}
-		};
-
-		/**
-		 * Get the group out of the wikitext
-		 *
-		 * @return {string} citation group
-		 */
-		this.getGroup = function () {
-			// Match <ref group="Foo">, <ref group="Foo's">
-			var match = this.wikitext.match( /<\s*ref[^>]+group\s*=\s*"([^">]+)"[^>]*>/i );
-			if ( !match ) {
-				// Match <ref group='Foo'>, <ref group='The "Foo"'>
-				match = this.wikitext.match( /<\s*ref[^>]+group\s*=\s*'([^'>]+)'[^>]*>/i );
-			}
-			if ( !match ) {
-				// Match <ref group=Foo>, <ref group=Foo's> and <ref group=The"Foo">
-				match = this.wikitext.match( /<\s*ref[^>]+group\s*=\s*([^ >]+)[^>]*>/i );
-			}
-			if ( match ) {
-				return match[ 1 ];
-			}
-		};
-
-		/**
-		 * Build the wikitext out of the form
-		 *
-		 * @return {string} citation wikitext
-		 */
-		this.buildWikitext = function () {
-			var name = $( '#proveit-reference-name' ).val(),
-				group = $( '#proveit-reference-group' ).val(),
-				wikitext = '<ref';
-			if ( name ) {
-				wikitext += ' name="' + name + '"';
-			}
-			if ( group ) {
-				wikitext += ' group="' + group + '"';
-			}
-			wikitext += ' />';
-			return wikitext;
-		};
-
-		/**
-		 * Set the properties
-		 */
-		this.name = this.getName();
-		this.group = this.getGroup();
+		}
 	},
 
 	/**
 	 * Template class
-	 *
+	 * @note When given a non-template wikitext, this class doesn't fail,
+	 * but rather produces a template object with empty name and params
+	 * This quirk allows us to handle plain-text citations as if they were templates.
 	 * @class
-	 * @param {string} wikitext Template wikitext
 	 */
-	Template: function ( wikitext ) {
+	Template: class {
 
 		/**
-		 * Template wikitext
+		 * Constructor
+		 * @param {string} wikitext Wikitext of the template
+		 * @param {number} index Initial position of the template
 		 */
-		this.wikitext = wikitext;
-
-		/**
-		 * Extract the normalized template name from the reference wikitext
-		 *
-		 * @return {string} normalized template name
-		 */
-		this.getName = function () {
-			var name = '',
-				regex, index;
-			for ( var templateName in ProveIt.templateData ) {
-				regex = new RegExp( '{{\\s*' + templateName + '\\s*[|}]', 'i' );
-				index = this.wikitext.search( regex );
-				if ( index > -1 ) {
-					name = templateName;
-					if ( typeof ProveIt.templateData[ name ] === 'string' ) {
-						name = ProveIt.templateData[ name ];
-						break;
-					}
-					break;
-				}
-			}
-			return name;
-		};
-
-		/**
-		 * Extract the normalized template parameters from the reference wikitext
-		 *
-		 * A complex template wikitext may be:
-		 * {{Cite book
-		 * | anonymous parameter
-		 * | param1 = value
-		 * | param2 = http://example.com?query=string
-		 * | param3 = [[Some|link]]
-		 * | param4 = {{Subtemplate|anon|param=value}}
-		 * }}
-		 *
-		 * @return {Object} Map from parameter name to parameter value
-		 */
-		this.getParams = function () {
-			var params = {};
-
-			// Remove the outer braces and split by pipe
-			// knowing that we may match pipes inside complex titles, wikilinks or subtemplates, like so:
-			// {{Cite book |title=Some|Title |author=[[Foo|Bar]] |year={{AD|123}} }}
-			var paramArray = this.wikitext.substring( 2, this.wikitext.length - 2 ).split( '|' );
-
-			// Drop the template name
-			paramArray.shift();
-
-			var paramString, linkDepth = 0, subtemplateDepth = 0, indexOfEqual, paramNumber = 0, paramName, paramValue;
-			for ( var i = 0; i < paramArray.length; i++ ) {
-
-				paramString = paramArray[ i ].trim();
-
-				// If we're inside a link or subtemplate, don't disturb it
-				if ( linkDepth || subtemplateDepth ) {
-					params[ paramName ] += '|' + paramString;
-					if ( paramString.indexOf( ']]' ) > -1 && paramString.indexOf( '[[' ) === -1 ) {
-						linkDepth--;
-					}
-					if ( paramString.indexOf( '}}' ) > -1 && paramString.indexOf( '{{' ) === -1 ) {
-						subtemplateDepth--;
-					}
-					continue;
-				}
-
-				// If we reach this point and there's no equal sign, it's an anonymous parameter
-				indexOfEqual = paramString.indexOf( '=' );
-				if ( indexOfEqual === -1 ) {
-					paramNumber++;
-					paramName = paramNumber;
-					paramValue = paramString;
-					params[ paramName ] = paramValue;
-					continue;
-				}
-
-				paramName = paramString.substring( 0, indexOfEqual ).trim();
-				paramValue = paramString.substring( indexOfEqual + 1 ).trim();
-
-				// Check if there's an unclosed link or subtemplate
-				if ( paramValue.lastIndexOf( '[[' ) > paramValue.lastIndexOf( ']]' ) ) {
-					linkDepth++;
-				}
-				if ( paramValue.lastIndexOf( '{{' ) > paramValue.lastIndexOf( '}}' ) ) {
-					subtemplateDepth++;
-				}
-
-				// Normalize the parameter name
-				if ( this.data && 'params' in this.data && !( paramName in this.data.params ) ) {
-					var paramAliases;
-					for ( var param in this.data.params ) {
-						paramAliases = this.data.params[ param ].aliases;
-						if ( paramAliases.indexOf( paramName ) !== -1 ) {
-							paramName = param;
-							break;
-						}
-					}
-				}
-				params[ paramName ] = paramValue;
-			}
-			return params;
-		};
+		constructor( wikitext, index ) {
+			this.type = 'template';
+			this.wikitext = wikitext;
+			this.index = index;
+			this.name = WikitextParser.getTemplateName( wikitext );
+			this.params = WikitextParser.getTemplateParameters( wikitext );
+			this.snippet = this.getSnippet();
+		}
 
 		/**
 		 * Get the template data for this template
-		 *
-		 * @return {Object} Template data
+		 * @return {Object} Template data for this template
 		 */
-		this.getData = function () {
-			var data = {};
-			if ( this.name in ProveIt.templateData ) {
-				data = ProveIt.templateData[ this.name ];
+		getTemplateData() {
+			let templateData = {};
+			if ( this.name ) {
+				const templateNameNormalized = ProveIt.normalizeTemplateName( this.name );
+				if ( templateNameNormalized in ProveIt.templateData ) {
+					templateData = ProveIt.templateData[ templateNameNormalized ];
+				}
 			}
-			return data;
-		};
+			return templateData;
+		}
 
 		/**
-		 * Get the parameter order for this template
-		 *
+		 * Get the data for the form fields of this template
 		 * @return {Array}
 		 */
-		this.getParamOrder = function () {
-			var paramOrder = [];
-			if ( 'paramOrder' in this.data ) {
-				paramOrder = this.data.paramOrder;
-			} else if ( 'params' in this.data ) {
-				paramOrder = Object.keys( this.data.params );
-			}
-			var paramNames = Object.keys( this.params );
-			paramOrder = paramOrder.concat( paramNames );
-			paramOrder = paramOrder.filter( function ( item, index ) {
-				return paramOrder.indexOf( item ) === index; // Remove duplicates
-			} );
-			return paramOrder;
-		};
+		getFields() {
+			const fields = [];
 
-		/**
-		 * Get the snippet for this reference
-		 *
-		 * @return {string} Snippet for this reference
-		 */
-		this.getSnippet = function () {
-			for ( var param in this.params ) {
-				if ( 'params' in this.data && param in this.data.params && this.data.params[ param ].required && ( this.data.params[ param ].type === 'string' || this.data.params[ param ].type === 'content' ) ) {
-					return this.params[ param ];
+			// First determine the param order
+			const templateData = this.getTemplateData();
+			const paramOrder = templateData.paramOrder || ( templateData.params && Object.keys( templateData.params ) ) || [];
+			const paramAliases = this.getParamAliases();
+			for ( const paramName in this.params ) {
+				if ( !paramOrder.includes( paramName ) && !( paramName in paramAliases ) ) {
+					paramOrder.push( paramName );
 				}
 			}
-			if ( this.wikitext.length > 100 ) {
-				return this.wikitext.substring( 0, 100 ).trim() + '...';
-			}
-			return this.wikitext;
-		};
 
-		/**
-		 * Build the template wikitext out of the template form
-		 *
-		 * @return {string} template wikitext
-		 */
-		this.buildWikitext = function () {
-			var templateWikitext = '',
-				templateName = $( '#proveit-template-select' ).val();
-			if ( templateName ) {
-				var paramName,
-					paramValue;
-				templateWikitext = '{{' + templateName;
-				$( 'input, textarea', '.proveit-template-param' ).each( function () {
-					paramName = $( this ).attr( 'name' );
-					paramValue = $( this ).val();
-					if ( paramName && paramValue ) {
-						templateWikitext += ( this.data && this.data.format === 'block' ) ? '\r\n| ' : ' |';
-						templateWikitext += $.isNumeric( paramName ) ? paramValue : paramName + '=' + paramValue;
+			// Then proceed in order
+			const userLanguage = mw.config.get( 'wgUserLanguage' );
+			const wikiLanguage = mw.config.get( 'wgContentLanguage' );
+			for ( const paramName of paramOrder ) {
+
+				// Set the defaults
+				const fieldName = paramName;
+				const fieldValue = this.params[ fieldName ] || null;
+				const field = {
+					name: fieldName,
+					value: fieldValue,
+					label: fieldName,
+					type: null,
+					tooltip: null,
+					required: false,
+					suggested: false,
+					deprecated: false,
+					visible: true,
+					suggestions: []
+				};
+
+				// Override with template data if there's any
+				if ( templateData.params && templateData.params[ paramName ] ) {
+					const paramData = templateData.params[ paramName ];
+					field.type = paramData.type;
+					field.label = paramData.label && ( paramData.label[ userLanguage ] || paramData.label[ wikiLanguage ] );
+					field.tooltip = paramData.description && ( paramData.description[ userLanguage ] || paramData.description[ wikiLanguage ] );
+					field.required = paramData.required;
+					field.suggested = paramData.suggested;
+					field.deprecated = paramData.deprecated;
+					field.class = { required: field.required, suggested: field.suggested, deprecated: field.deprecated };
+					field.suggestions = paramData.suggestedvalues;
+					if ( !field.value && paramData.aliases ) {
+						for ( const paramAlias of paramData.aliases ) {
+							if ( this.params[ paramAlias ] ) {
+								field.name = paramAlias;
+								field.value = this.params[ paramAlias ];
+								break;
+							}
+						}
 					}
-				} );
-				if ( this.data && this.data.format === 'block' ) {
-					templateWikitext += '\r\n}}';
-				} else {
-					templateWikitext += '}}';
+					field.visible = field.value || field.required || field.suggested ? true : false;
 				}
+
+				fields.push( field );
 			}
-			return templateWikitext;
-		};
+			return fields;
+		}
 
 		/**
-		 * Set the properties
+		 * Get a map from parameter aliases to canonical parameter names
+		 * @return {Object} Map from parameter aliases to canonical parameter names
 		 */
-		this.name = this.getName();
-		this.data = this.getData();
-		this.params = this.getParams();
-		this.paramOrder = this.getParamOrder();
-		this.snippet = this.getSnippet();
+		getParamAliases() {
+			const paramAliases = {};
+			const templateData = this.getTemplateData();
+			for ( const paramName in templateData.params ) {
+				const paramData = templateData.params[ paramName ];
+				if ( paramData.aliases ) {
+					for ( const paramAlias of paramData.aliases ) {
+						paramAliases[ paramAlias ] = paramName;
+					}
+				}
+			}
+			return paramAliases;
+		}
+
+		/**
+		 * Get the snippet for this template
+		 * @return {string} Snippet for this template
+		 */
+		getSnippet() {
+			let snippet = this.toWikitext();
+			const templateData = this.getTemplateData();
+			for ( const paramName in this.params ) {
+				if ( templateData.params && paramName in templateData.params ) {
+					const paramData = templateData.params[ paramName ];
+					const paramType = paramData.type;
+					if ( paramData.required && paramType === 'string' || paramType === 'content' ) {
+						const paramValue = this.params[ paramName ];
+						snippet = paramValue;
+						break;
+					}
+				}
+			}
+			return snippet;
+		}
+
+		/**
+		 * Convert this template model into template wikitext
+		 * @return {string} Template wikitext
+		 */
+		toWikitext() {
+			let wikitext = this.wikitext;
+			if ( this.name ) {
+				wikitext = '{{' + this.name;
+
+				// First determine the param order
+				const templateData = this.getTemplateData();
+				const paramOrder = templateData.paramOrder || ( templateData.params && Object.keys( templateData.params ) ) || [];
+				const paramAliases = this.getParamAliases();
+				for ( const paramName in this.params ) {
+					if ( !paramOrder.includes( paramName ) && !( paramName in paramAliases ) ) {
+						paramOrder.push( paramName );
+					}
+				}
+
+				// Then proceed in order
+				for ( let paramName of paramOrder ) {
+					if ( !( paramName in this.params ) ) {
+						for ( const paramAlias in paramAliases ) {
+							if ( paramName === paramAliases[ paramAlias ] && paramAlias in this.params ) {
+								paramName = paramAlias;
+								break;
+							}
+						}
+					}
+					const paramValue = this.params[ paramName ];
+					if ( paramValue ) {
+						wikitext += templateData.format === 'block' ? '\r\n| ' : ' |';
+						wikitext += /^\d+$/.test( paramName ) ? paramValue : paramName + '=' + paramValue;
+					}
+				}
+
+				wikitext += templateData.format === 'block' ? '\r\n}}' : '}}';
+			}
+			return wikitext;
+		}
 	},
 
 	/**
 	 * Reference class
-	 *
 	 * @class
-	 * @param {string} wikitext Reference wikitext
-	 * @param {number} index Reference index
 	 */
-	Reference: function ( wikitext, index ) {
+	Reference: class {
 
 		/**
-		 * Reference wikitext
+		 * Constructor
+		 * @param {string} wikitext Wikitext of the reference
+		 * @param {number} index Initial position of the template
 		 */
-		this.wikitext = wikitext;
-
-		/**
-		 * Reference index
-		 */
-		this.index = index;
-
-		/**
-		 * Insert a <ref> for this reference
-		 *
-		 * @param {jQuery.Event} event
-		 */
-		this.cite = function ( event ) {
-			var reference = event.data,
-				name = $( '#proveit-reference-name' ).val();
-
-			if ( !name ) {
-				name = reference.snippet;
-				name = name.replace( '"', '' );
-				name = name.substring( 0, 30 ).trim() + '...';
-				$( '#proveit-reference-name' ).val( name );
-			}
-
-			var citationWikitext = '<ref name="' + this.name + '" ' + ( reference.group ? ' group="' + this.group + '"' : '' ) + ' />',
-				citation = new ProveIt.Citation( citationWikitext );
-
-			// Insert the citation first, update the reference name, and highlight the citation again
-			ProveIt.insert( citation );
-			ProveIt.update( reference );
-			ProveIt.highlight( citation );
-		};
+		constructor( wikitext, index ) {
+			this.type = 'reference';
+			this.wikitext = wikitext;
+			this.index = index;
+			this.name = WikitextParser.getTagAttribute( wikitext, 'name' );
+			this.group = WikitextParser.getTagAttribute( wikitext, 'group' );
+			this.extends = WikitextParser.getTagAttribute( wikitext, 'extends' );
+			this.content = WikitextParser.getTagContent( wikitext );
+			this.template = this.getTemplate();
+			this.snippet = this.getSnippet();
+			this.reuses = this.getReuses();
+			this.subrefs = this.getSubrefs();
+		}
 
 		/**
 		 * Get the snippet for this reference
-		 *
-		 * @return {string} snippet of this reference
+		 * @return {string|null} Snippet for this reference or null if there's no content
 		 */
-		this.getSnippet = function () {
-			if ( this.template.snippet ) {
-				return this.template.snippet;
-			}
-			if ( this.content.length > 100 ) {
-				return this.content.substring( 0, 100 ).trim() + '...';
-			}
-			return this.content;
-		};
-
-		/**
-		 * Get the content out of the reference wikitext
-		 *
-		 * @return {string} reference content
-		 */
-		this.getContent = function () {
-			var match = this.wikitext.match( />([\s\S]*)<\s*\/\s*ref\s*>/i );
-			return match[ 1 ];
-		};
-
-		/**
-		 * Get the name out of the wikitext
-		 *
-		 * @return {string} New reference
-		 */
-		this.getName = function () {
-			// Match <ref name="Foo">, <ref name="Foo's">
-			var match = this.wikitext.match( /<\s*ref[^>]+name\s*=\s*"([^">]+)"[^>]*>/i );
-			if ( !match ) {
-				// Match <ref name='Foo'>, <ref name='The "Foo"'>
-				match = this.wikitext.match( /<\s*ref[^>]+name\s*=\s*'([^'>]+)'[^>]*>/i );
-			}
-			if ( !match ) {
-				// Match <ref name=Foo>, <ref name=Foo's> and <ref name=The"Foo">
-				match = this.wikitext.match( /<\s*ref[^>]+name\s*=\s*([^ >]+)[^>]*>/i );
-			}
-			if ( match ) {
-				return match[ 1 ];
-			}
-		};
-
-		/**
-		 * Get the group out of the wikitext
-		 *
-		 * @return {string} New reference
-		 */
-		this.getGroup = function () {
-			// Match <ref group="Foo">, <ref group="Foo's">
-			var match = this.wikitext.match( /<\s*ref[^>]+group\s*=\s*"([^">]+)"[^>]*>/i );
-			if ( !match ) {
-				// Match <ref group='Foo'>, <ref group='The "Foo"'>
-				match = this.wikitext.match( /<\s*ref[^>]+group\s*=\s*'([^'>]+)'[^>]*>/i );
-			}
-			if ( !match ) {
-				// Match <ref group=Foo>, <ref group=Foo's> and <ref group=The"Foo">
-				match = this.wikitext.match( /<\s*ref[^>]+group\s*=\s*([^ >]+)[^>]*>/i );
-			}
-			if ( match ) {
-				return match[ 1 ];
-			}
-		};
-
-		/**
-		 * Get the reference template
-		 *
-		 * @return {ProveIt.Template} Reference template
-		 */
-		this.getTemplate = function () {
-			var template = new ProveIt.Template( '' ),
-				templates = ProveIt.getTemplates( this.wikitext );
-			if ( templates.length ) {
-				template = templates[ 0 ];
-			}
-			return template;
-		};
-
-		/**
-		 * Get all the citations to this reference
-		 *
-		 * @return {ProveIt.Citation[]} Array of Citation objects
-		 */
-		this.getCitations = function () {
-			var citations = [],
-				wikitext = ProveIt.getWikitext(),
-				citationRegex = /<ref[^/]*\/>/ig,
-				citationMatch, citationWikitext, citationIndex, citationNameMatch, citationName, citation;
-			while ( ( citationMatch = citationRegex.exec( wikitext ) ) !== null ) {
-				citationWikitext = citationMatch[ 0 ];
-				citationIndex = citationMatch.index;
-				citationNameMatch = citationWikitext.match( /name\s*=\s*"([^">]+)"/i );
-				if ( !citationNameMatch ) {
-					citationNameMatch = citationWikitext.match( /name\s*=\s*'([^'>]+)'/i );
+		getSnippet() {
+			if ( this.content ) {
+				let snippet = this.content;
+				const template = this.getTemplate();
+				if ( template ) {
+					const templateSnippet = template.getSnippet();
+					if ( templateSnippet ) {
+						snippet = templateSnippet;
+					}
 				}
-				if ( !citationNameMatch ) {
-					citationNameMatch = citationWikitext.match( /name\s*=\s*([^ >]+)/i );
-				}
-				if ( citationNameMatch ) {
-					citationName = citationNameMatch[ 1 ];
-					if ( citationName === this.name ) {
-						citation = new ProveIt.Citation( citationWikitext, citationIndex );
-						citations.push( citation );
+				return snippet;
+			}
+		}
+
+		/**
+		 * Get the main citation template of this reference
+		 * @return {ProveIt.Template|null} Citation template or null if there's none
+		 */
+		getTemplate() {
+			if ( this.content ) {
+				for ( const templateWikitext of WikitextParser.getTemplates( this.content ) ) {
+					const templateName = WikitextParser.getTemplateName( templateWikitext );
+					const templateNameNormalized = ProveIt.normalizeTemplateName( templateName );
+					if ( templateNameNormalized in ProveIt.templateData ) {
+						return new ProveIt.Template( templateWikitext );
 					}
 				}
 			}
-			return citations;
-		};
+		}
 
 		/**
-		 * Build the wikitext out of the form
-		 *
+		 * Get all the reuses of this reference
+		 * @return {ProveIt.Reference[]} Array of Reference objects
+		 */
+		getReuses() {
+			const reuses = [];
+			if ( this.name && this.content ) {
+				const pageWikitext = ProveIt.getWikitext();
+				const reuseRegExp = /<ref[^/]*\/>/ig;
+				let reuseMatch;
+				while ( ( reuseMatch = reuseRegExp.exec( pageWikitext ) ) ) {
+					const reuseWikitext = reuseMatch[0];
+					const reuseIndex = reuseMatch.index;
+					const reuse = new ProveIt.Reference( reuseWikitext, reuseIndex );
+					if ( this.name === reuse.name ) {
+						reuses.push( reuse );
+					}
+				}
+			}
+			return reuses;
+		}
+
+		/**
+		 * Get all the sub-references of this reference
+		 * @return {ProveIt.Reference[]} Array of Reference objects
+		 */
+		getSubrefs() {
+			const subrefs = [];
+			if ( this.name && this.content ) {
+				const pageWikitext = ProveIt.getWikitext();
+				let subrefIndexOffset = 0;
+				for ( const subrefWikitext of WikitextParser.getReferences( pageWikitext ) ) {
+					const subrefExtends = WikitextParser.getTagAttribute( subrefWikitext, 'extends' );
+					if ( subrefExtends && this.name === subrefExtends ) {
+						const subrefIndex = pageWikitext.indexOf( subrefWikitext, subrefIndexOffset );
+						const subref = new ProveIt.Reference( subrefWikitext, subrefIndex );
+						subrefs.push( subref );
+						subrefIndexOffset = subrefIndex + subrefWikitext.length;
+					}
+				}
+			}
+			return subrefs;
+		}
+
+		/**
+		 * Convert this reference model into reference wikitext
 		 * @return {string} Reference wikitext
 		 */
-		this.buildWikitext = function () {
-			var name = $( '#proveit-reference-name' ).val(),
-				group = $( '#proveit-reference-group' ).val(),
-				content = this.buildContent(),
-				wikitext = '<ref';
-			if ( name ) {
-				wikitext += ' name="' + name + '"';
+		toWikitext() {
+			let wikitext = '<ref';
+			if ( this.name ) {
+				wikitext += ' name="' + this.name + '"';
 			}
-			if ( group ) {
-				wikitext += ' group="' + group + '"';
+			if ( this.group ) {
+				wikitext += ' group="' + this.group + '"';
 			}
-			wikitext += '>' + content + '</ref>';
+			if ( this.extends ) {
+				wikitext += ' extends="' + this.extends + '"';
+			}
+			if ( this.content ) {
+				if ( this.template ) {
+					this.content = this.content.replace( this.template.wikitext, this.template.toWikitext() );
+				}
+				wikitext += '>' + this.content + '</ref>';
+			} else {
+				wikitext += ' />';
+			}
 			return wikitext;
-		};
-
-		/**
-		 * Build the content out of the form
-		 *
-		 * @return {string} Reference content
-		 */
-		this.buildContent = function () {
-			var content = $( '#proveit-reference-content' ).val(),
-				dummy = new ProveIt.Reference( '<ref>' + content + '</ref>' );
-			content = content.replace( dummy.template.wikitext, this.template.buildWikitext() );
-			content = content.trim();
-			return content;
-		};
-
-		/**
-		 * Set the properties
-		 */
-		this.name = this.getName();
-		this.group = this.getGroup();
-		this.content = this.getContent();
-		this.template = this.getTemplate();
-		this.snippet = this.getSnippet();
-		this.citations = this.getCitations();
+		}
 	},
 
 	/**
 	 * Convenience method to detect the current editor
-	 *
-	 * @return {string|null} Name of the current editor ('core', 'wikieditor', 'codemirror' or '2017') or null if it's not supported
+	 * @return {string|null} Name of the editor or null if it's not supported
 	 */
-	getEditor: function () {
+	getEditor() {
 		if ( window.ve && ve.init && ve.init.target && ve.init.target.active ) {
 			if ( ve.init.target.getSurface().getMode() === 'source' ) {
-				return '2017'; // 2017 wikitext editor
+				return 'source'; // 2017 wikitext editor
 			}
-			return 'visualeditor'; // Visual editor
 		}
-		var action = mw.config.get( 'wgAction' );
+		const action = mw.config.get( 'wgAction' );
 		if ( action === 'edit' || action === 'submit' ) {
 			if ( mw.user.options.get( 'usebetatoolbar' ) === 1 ) {
 				if ( $( '.CodeMirror' ).length ) {
@@ -1564,19 +1385,57 @@ window.ProveIt = {
 
 	/**
 	 * Convenience method to get the wikitext of the current page
-	 *
 	 * @return {string} Wikitext of the current page
 	 */
-	getWikitext: function () {
+	getWikitext() {
 		return $( '#wpTextbox1' ).textSelection( 'getContents' );
+	},
+
+	/**
+	 * Helper method to normalize the name of a template
+	 * @param {string} templateName Template name
+	 * @return {string} Normalized template name
+	 */
+	normalizeTemplateName( templateName ) {
+		templateName = templateName.trim();
+		templateName = templateName.charAt( 0 ).toUpperCase() + templateName.slice( 1 ); // Capitalize the first letter
+		templateName = templateName.replaceAll( '_', ' ' );
+		if ( templateName in ProveIt.templateAliases ) {
+			templateName = ProveIt.templateAliases[ templateName ];
+		}
+		return templateName;
+	},
+
+	/**
+	 * Helper method to set a cookie
+ 	 * @param {string} key Key of the cookie to set
+	 * @param {string} value Value of the cookie to set
+	 */
+	setCookie( key, value ) {
+		const cookie = mw.cookie.get( 'Proveit' );
+		const data = cookie ? JSON.parse( cookie ) : {};
+		data[ key ] = value;
+		const json = JSON.stringify( data );
+		mw.cookie.set( 'Proveit', json );
+	},
+
+	/**
+	 * Helper method to get a cookie
+ 	 * @param {string} key Key of the cookie to get
+	 * @return {string} Value of the cookie
+	 */
+	getCookie( key ) {
+		const cookie = mw.cookie.get( 'Proveit' );
+		const data = cookie ? JSON.parse( cookie ) : {};
+		return data[ key ];
 	}
 };
 
-$.when( mw.loader.using( [
+mw.loader.using( [
 	'mediawiki.api',
-	'mediawiki.util',
 	'mediawiki.cookie',
 	'jquery.textSelection',
 	'jquery.ui'
-] ), $.ready ).then( ProveIt.init );
+], ProveIt.init );
+
 // </nowiki>
