@@ -30,6 +30,7 @@
 	"proveit-no-references": "Text for when no references are found",
 	"proveit-normalize-button": "Text for the button that normalizes the wikitext of all the references and citation templates",
 	"proveit-normalize-tooltip": "Tooltip for the button that normalizes the wikitext of all the references and citation templates",
+	"proveit-normalize-confirm": "Confirmation message when the user is about to normalize all references and citation templates",
 	"proveit-reference-name-label": "Label for the field of the reference name",
 	"proveit-reference-name-warning": "Warning message when a user deletes the name of a reference that has reuses or subreferences",
 	"proveit-reference-name-required": "Warning message when a user tries to reuse a reference that doesn't have a name",
