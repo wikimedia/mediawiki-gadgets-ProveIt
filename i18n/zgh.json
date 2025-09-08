@@ -5,11 +5,8 @@
 		]
 	},
 	"proveit-back-button": "ⴰⵖⵓⵍ",
-	"proveit-citoid-error": "ⵜⴰⵣⴳⵍⵜ",
-	"proveit-citoid-placeholder": "URL, DOI, ISBN ⵏⵖ PMC/PMID",
 	"proveit-filter-fields": "ⵙⵜⵢ ⵉⴳⵔⴰⵏ",
-	"proveit-filter-references": "ⵙⵜⵢ ⵜⵉⵙⵓⵖⴰⵍ",
-	"proveit-reference-template-label": "ⴰⵣⵓⵔⵜ",
+	"proveit-template-label": "ⴰⵣⵓⵔⵜ",
 	"proveit-remove-button": "ⴽⴽⵙ",
 	"proveit-today-button": "ⴰⵙⵙⴰ",
 	"proveit-update-button": "ⵙⴷⵖⵉ"

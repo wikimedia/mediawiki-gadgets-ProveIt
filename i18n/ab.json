@@ -6,13 +6,8 @@
 			"Андрей"
 		]
 	},
-	"proveit-citoid-error": "Агха",
-	"proveit-citoid-load": "Иҭагалатәуп",
-	"proveit-citoid-loading": "Аҭагалара...",
-	"proveit-citoid-placeholder": "Азхьарԥш, DOI, ISBN ма PMC/PMID",
 	"proveit-no-references": "Ахыҵхырҭақәа ԥшаам",
-	"proveit-no-template": "Ашаблон ыҟам",
-	"proveit-reference-template-label": "Ихадоу ашаблон",
+	"proveit-template-label": "Ихадоу ашаблон",
 	"proveit-remove-button": "Ианыхтәуп",
 	"proveit-today-button": "Иахьа",
 	"proveit-update-button": "Ирҿыцтәуп"

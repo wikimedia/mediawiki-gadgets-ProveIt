@@ -4,15 +4,10 @@
 			"Bosogo"
 		]
 	},
-	"proveit-citoid-error": "Ката",
-	"proveit-citoid-load": "Жүктөө",
-	"proveit-citoid-loading": "Жүктөлүүдө...",
-	"proveit-citoid-placeholder": "URL, DOI, ISBN же PMC/PMID",
 	"proveit-insert-button": "Кошуу",
-	"proveit-reference-template-label": "Калып",
+	"proveit-template-label": "Калып",
 	"proveit-remove-button": "Алып салуу",
 	"proveit-archive-button": "Архивдөө",
-	"proveit-archive-title": "Архивделген URL",
 	"proveit-today-button": "Бүгүнкү",
 	"proveit-update-button": "Жаңылоо"
 }

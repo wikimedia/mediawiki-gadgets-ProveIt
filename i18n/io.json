@@ -5,15 +5,10 @@
 		]
 	},
 	"proveit-back-button": "Retroirar",
-	"proveit-citoid-error": "Eroro",
-	"proveit-citoid-label": "Automatala refero",
-	"proveit-citoid-load": "Kargar",
-	"proveit-confirm-remove": "To anke efacos omna citaji pri la refero. OK?",
 	"proveit-insert-button": "Insertar",
 	"proveit-no-references": "Nula referi trovita",
-	"proveit-reference-content-label": "Kontenajo di refero",
 	"proveit-reference-name-label": "Nomo di la refero",
-	"proveit-reference-wikitext-label": "Referi de la wikitexto",
+	"proveit-reference-content-label": "Kontenajo di refero",
 	"proveit-remove-button": "Removar",
 	"proveit-update-button": "Aktualigar"
 }

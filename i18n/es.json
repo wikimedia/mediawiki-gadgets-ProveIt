@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Fitoschido",
+			"Jemily1",
 			"Macofe",
 			"Sophivorus",
 			"Tiberius1701"
@@ -40,14 +41,14 @@
 	"proveit-generate-label": "Cita automática",
 	"proveit-generate-button": "Generar",
 	"proveit-generate-tooltip": "Proporciona una URL, DOI, ISBN, PMC/PMID o una cita en bien formada en texto plano y luego haz click aquí para intentar generar una plantilla de cita automáticamente",
-	"proveit-generate-placeholder": "Proporciona una URL, DOI, ISBN, PMC/PMID o una cita en bien formada en texto plano",
+	"proveit-generate-placeholder": "Introduzca una URL, DOI, ISBN, PMC/PMID o una cita de texto sin formato bien formada",
 	"proveit-generate-generating": "Generando...",
 	"proveit-generate-fail": "No se pudo generar una cita",
 	"proveit-template-label": "Plantilla",
 	"proveit-template-select": "Selecciona una plantilla",
 	"proveit-remove-button": "Quitar",
 	"proveit-remove-tooltip": "Quitar de la página",
-	"proveit-remove-confirm": "Esto también quitará todas las reutilizaciones y subreferncias. ¿Estás seguro?",
+	"proveit-remove-confirm": "Esto también quitará todas las reutilizaciones y subreferencias. ¿Estás seguro?",
 	"proveit-show-all-button": "Mostrar todo",
 	"proveit-show-all-tooltip": "Mostrar todos los campos",
 	"proveit-archive-button": "Archivar",
