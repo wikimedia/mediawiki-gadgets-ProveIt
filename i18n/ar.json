@@ -23,7 +23,7 @@
 	"proveit-insert-tooltip": "إدراج الصفحة",
 	"proveit-no-references": "لم يتم العثور على مراجع",
 	"proveit-normalize-button": "تطبيع الكل",
-	"proveit-normalize-tooltip": "تطبيع التباعد وترتيب الوسائط لجميع المراجع والقوالب",
+	"proveit-normalize-tooltip": "تطبيع التباعد وترتيب المعلمات لجميع المراجع وقوالب الاستشهاد",
 	"proveit-reference-name-label": "اسم المرجع",
 	"proveit-reference-name-required": "أدخل اسمًا لإعادة استخدام هذا المرجع.",
 	"proveit-reference-group-label": "المجموعة المرجعية",

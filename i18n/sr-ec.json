@@ -23,6 +23,7 @@
 	"proveit-reference-name-label": "Име референце",
 	"proveit-reference-group-label": "Група референци",
 	"proveit-reference-content-label": "Садржај референце",
+	"proveit-generate-button": "Генериши",
 	"proveit-generate-generating": "Генерисање...",
 	"proveit-template-label": "Шаблон",
 	"proveit-template-select": "Изаберите шаблон",
@@ -31,7 +32,7 @@
 	"proveit-archive-button": "Архива",
 	"proveit-archive-fetching": "Добављање...",
 	"proveit-archive-not-found": "Није пронађен архивирани URL",
-	"proveit-archive-error": "Дошло је до грешке приликом приступања Wayback Machine API-ја",
+	"proveit-archive-error": "Дошло је до грешке при приступању Wayback Machine-ни",
 	"proveit-today-button": "Данас",
 	"proveit-update-button": "Ажурирај"
 }
