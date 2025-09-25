@@ -29,7 +29,7 @@
 	"proveit-insert-tooltip": "Insertar en la página",
 	"proveit-no-references": "No se encontraron referencias",
 	"proveit-normalize-button": "Normalizar todo",
-	"proveit-normalize-tooltip": "Normalizar el espaciado y el orden de los parámetros en todas las referencias y plantillas de citas",
+	"proveit-normalize-tooltip": "Normalizar el espaciado y el orden de los parámetros de todas las referencias y plantillas de citas",
 	"proveit-normalize-confirm": "Estás por normalizar el espaciado y el orden de los parámetros en todas las referencias y plantillas de citas. Por favor recuerda que las ediciones que solo hacen cambios cosméticos pueden ser consideradas disruptivas.",
 	"proveit-reference-name-label": "Nombre de la referencia",
 	"proveit-reference-name-warning": "Esta referencia tiene una o más reutilizaciones o subreferencias. Quitar el nombre las desvinculará.",

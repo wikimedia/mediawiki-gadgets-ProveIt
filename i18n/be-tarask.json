@@ -23,6 +23,7 @@
 	"proveit-filter-fields": "Фільтар палёў",
 	"proveit-filter-list": "Адфільтраваць сьпіс",
 	"proveit-insert-button": "Уставіць",
+	"proveit-insert-tooltip": "Уставіць на старонку",
 	"proveit-no-references": "Крыніцы ня знойдзеныя",
 	"proveit-normalize-button": "Нармалізаваць усё",
 	"proveit-reference-name-label": "Назва крыніцы",
@@ -36,5 +37,6 @@
 	"proveit-archive-not-found": "Заархіваваны URL ня знойдзены",
 	"proveit-archive-error": "Памылка досягу да Wayback Machine",
 	"proveit-today-button": "Сёньня",
-	"proveit-update-button": "Абнавіць"
+	"proveit-update-button": "Абнавіць",
+	"proveit-update-tooltip": "Абнавіць на старонцы"
 }
