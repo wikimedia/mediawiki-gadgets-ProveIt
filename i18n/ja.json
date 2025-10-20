@@ -35,6 +35,7 @@
 	"proveit-normalize-confirm": "出典と引用のテンプレート全点についてスペースおよびパラメータの順序を正規化しようとしています。見た目だけを変更する編集は、不正行為と見なされる場合があるのでご注意ください。",
 	"proveit-reference-name-label": "出典 name",
 	"proveit-reference-group-label": "出典 group",
+	"proveit-reference-extends-label": "主な参考文献",
 	"proveit-reference-content-label": "出典内容",
 	"proveit-generate-fail": "入力した情報から引用を生成できませんでした",
 	"proveit-template-label": "テンプレート",
@@ -42,7 +43,7 @@
 	"proveit-remove-button": "除去",
 	"proveit-remove-tooltip": "ページから削除",
 	"proveit-remove-confirm": "これにより出典のすべての再利用およびサブ参照を削除します。よろしいですか？",
-	"proveit-show-all-button": "全てを表示",
+	"proveit-show-all-button": "すべて表示",
 	"proveit-show-all-tooltip": "すべてのフィールドを表示",
 	"proveit-archive-button": "アーカイブ",
 	"proveit-archive-tooltip": "Wayback Machineから最新のアーカイブURLを取得",
@@ -53,7 +54,7 @@
 	"proveit-today-button": "今日",
 	"proveit-today-tooltip": "今日の日付を入力",
 	"proveit-normalize-date-button": "正規化",
-	"proveit-normalize-date-tooltip": "このウィキの標準に従って日付を正規化する",
+	"proveit-normalize-date-tooltip": "このウィキの標準にしたがって日付を正規化する",
 	"proveit-update-button": "更新",
 	"proveit-update-tooltip": "ページの更新"
 }

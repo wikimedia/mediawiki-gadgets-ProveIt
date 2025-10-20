@@ -2,10 +2,12 @@
 	"@metadata": {
 		"authors": [
 			"Mirin",
-			"Robin van der Vliet"
+			"Robin van der Vliet",
+			"Tymewalk"
 		]
 	},
 	"proveit-add-reference-button": "Aldoni referencon",
+	"proveit-add-template-button": "Aldoni ŝablonon",
 	"proveit-back-button": "Reveni",
 	"proveit-filter-fields": "Filtri kampojn",
 	"proveit-insert-button": "Enmeti",
