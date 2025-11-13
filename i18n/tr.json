@@ -5,6 +5,7 @@
 			"Bulgu",
 			"Grkn gll",
 			"Leo",
+			"SaldırganSincap",
 			"Stonecy",
 			"Trockya"
 		]
@@ -14,17 +15,17 @@
 	"proveit-filter-fields": "Alanları filtrele",
 	"proveit-insert-button": "Ekle",
 	"proveit-no-references": "Kaynak bulunamadı",
-	"proveit-normalize-button": "Her şeyi normalleştir",
+	"proveit-normalize-button": "Tümünü normalleştir",
 	"proveit-reference-name-label": "Kaynak adı",
 	"proveit-reference-group-label": "Kaynak grubu",
 	"proveit-reference-content-label": "Kaynak içeriği",
 	"proveit-template-label": "Şablon",
 	"proveit-remove-button": "Kaldır",
-	"proveit-show-all-button": "Tüm alanları göster",
+	"proveit-show-all-button": "Hepsini göster",
 	"proveit-archive-button": "Arşiv",
 	"proveit-archive-fetching": "Getiriliyor...",
 	"proveit-archive-not-found": "Arşivlenmiş URL bulunamadı",
-	"proveit-archive-error": "Wayback Machine API'sine erişim hatası",
+	"proveit-archive-error": "Wayback Machine'e erişim hatası",
 	"proveit-today-button": "Bugün",
 	"proveit-update-button": "Güncelle"
 }
