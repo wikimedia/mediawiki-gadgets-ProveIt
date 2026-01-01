@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Jopparn",
+			"Stefan2255",
 			"WikiPhoenix"
 		]
 	},
@@ -10,13 +11,13 @@
 	"proveit-filter-fields": "Filtrera fält",
 	"proveit-insert-button": "Infoga",
 	"proveit-no-references": "Inga referenser hittades",
-	"proveit-normalize-button": "Normalisera allting",
+	"proveit-normalize-button": "Normalisera alla",
 	"proveit-reference-name-label": "Referensnamn",
 	"proveit-reference-group-label": "Referensgrupp",
 	"proveit-reference-content-label": "Källhänvisningsinnehåll",
 	"proveit-template-label": "Mall",
 	"proveit-remove-button": "Ta bort",
-	"proveit-show-all-button": "Visa alla fält",
+	"proveit-show-all-button": "Visa alla",
 	"proveit-today-button": "Idag",
 	"proveit-update-button": "Uppdatera"
 }
