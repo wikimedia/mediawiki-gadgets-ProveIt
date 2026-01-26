@@ -3,12 +3,14 @@
 		"authors": [
 			"Bisang",
 			"Suleiman the Magnificent Television",
+			"YeBoy371",
 			"Ykhwong",
 			"그냥기여자"
 		]
 	},
-	"proveit-add-reference-button": "참고문헌 추가",
+	"proveit-add-reference-button": "각주 추가",
 	"proveit-add-template-button": "틀 추가",
+	"proveit-refresh-button": "목록 새로 고침",
 	"proveit-back-button": "뒤로",
 	"proveit-back-tooltip": "각주 목록으로 돌아가기",
 	"proveit-previous-button": "이전",
