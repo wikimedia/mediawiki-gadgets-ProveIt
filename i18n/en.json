@@ -50,7 +50,7 @@
 	"proveit-archive-button": "Archive",
 	"proveit-archive-tooltip": "Get the latest archived URL from the Wayback Machine",
 	"proveit-archive-fetching": "Fetching...",
-	"proveit-archive-success": "Please test the archived URL before using it: $1",
+	"proveit-archive-success": "Please test the archived URL before using it: $1 Archive date: $2",
 	"proveit-archive-not-found": "No archived URL was found",
 	"proveit-archive-error": "Error accessing Wayback Machine",
 	"proveit-today-button": "Today",

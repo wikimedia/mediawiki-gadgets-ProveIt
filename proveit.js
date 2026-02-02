@@ -68,7 +68,7 @@ window.ProveIt = {
 		'proveit-archive-button': 'Archive',
 		'proveit-archive-tooltip': 'Get the latest archived URL from the Wayback Machine',
 		'proveit-archive-fetching': 'Fetching...',
-		'proveit-archive-success': 'Please test the archived URL before using it: $1',
+		'proveit-archive-success': 'Please test the archived URL before using it: $1 Archive date: $2',
 		'proveit-archive-not-found': 'No archived URL was found',
 		'proveit-archive-error': 'Error accessing Wayback Machine',
 		'proveit-today-button': 'Today',
@@ -860,8 +860,20 @@ window.ProveIt = {
 					const data = await $.getJSON( 'https://archive.org/wayback/available?url=' + encodeURIComponent( value ) );
 					const snapshot = data.archived_snapshots.closest;
 					if ( snapshot ) {
+						const url = snapshot.url;
+						const date = this.normalizeDate( snapshot.timestamp );
 						field.status = 'success';
-						field.messages = { success: mw.msg( 'proveit-archive-success', snapshot.url ) };
+						field.messages = { success: mw.msg( 'proveit-archive-success', url, date ) };
+						for ( const field of this.form.templateFields ) {
+							if ( field.name === 'archive-url' ) {
+								field.value = url;
+								this.form.object.template.params[ field.name ] = url;
+							}
+							if ( field.name === 'archive-date' ) {
+								field.value = date;
+								this.form.object.template.params[ field.name ] = date;
+							}
+						}
 					} else {
 						field.status = 'warning';
 						field.messages = { warning: mw.msg( 'proveit-archive-not-found' ) };
@@ -892,9 +904,9 @@ window.ProveIt = {
 				value = value.trim();
 
 				// Wayback Machine and MediaWiki timestamps (T342221)
-				const match = value.match( /^(?<year>\d{4})(?<month>\d{2})(?<day>\d{2})\d{6}$/ );
+				const match = value.match( /^(\d{4})(\d{2})(\d{2})\d{6}$/ );
 				if ( match ) {
-					value = match.year + '-' + match.month + '-' + match.day;
+					value = match[1] + '-' + match[2] + '-' + match[3];
 				}
 
 				// Return the date in the preferred format
