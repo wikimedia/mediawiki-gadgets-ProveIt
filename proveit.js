@@ -68,7 +68,7 @@ window.ProveIt = {
 		'proveit-archive-button': 'Archive',
 		'proveit-archive-tooltip': 'Get the latest archived URL from the Wayback Machine',
 		'proveit-archive-fetching': 'Fetching...',
-		'proveit-archive-success': 'Please test the archived URL before using it: $1 Archive date: $2',
+		'proveit-archive-success': 'Done! Remember to test the archived URL before saving.',
 		'proveit-archive-not-found': 'No archived URL was found',
 		'proveit-archive-error': 'Error accessing Wayback Machine',
 		'proveit-today-button': 'Today',
@@ -864,14 +864,15 @@ window.ProveIt = {
 						const date = this.normalizeDate( snapshot.timestamp );
 						field.status = 'success';
 						field.messages = { success: mw.msg( 'proveit-archive-success', url, date ) };
+						const aliases = this.form.object.template.getParamAliases();
 						for ( const field of this.form.templateFields ) {
-							if ( field.name === 'archive-url' ) {
+							if ( field.name === 'archive-url' || field.name === aliases[ 'archive-url' ] ) {
 								field.value = url;
-								this.form.object.template.params[ field.name ] = url;
+								this.onTemplateFieldChange( field );
 							}
-							if ( field.name === 'archive-date' ) {
+							if ( field.name === 'archive-date' || field.name === aliases[ 'archive-date' ] ) {
 								field.value = date;
-								this.form.object.template.params[ field.name ] = date;
+								this.onTemplateFieldChange( field );
 							}
 						}
 					} else {
@@ -1197,6 +1198,10 @@ window.ProveIt = {
 						break;
 					}
 				}
+			}
+			// T415928
+			if ( ProveIt.normalizeTemplateName( this.name ) === 'Cite book' && this.params.chapter ) {
+				snippet += ' — ' + this.params.chapter;
 			}
 			return snippet;
 		}
