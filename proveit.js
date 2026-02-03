@@ -99,6 +99,11 @@ window.ProveIt = {
 	],
 
 	/**
+	 * User-Agent for API calls
+	 */
+	userAgent: 'ProveIt/3.0',
+	
+	/**
 	 * Initialization script
 	 */
 	async init() {
@@ -295,7 +300,7 @@ window.ProveIt = {
 
 				// Get the template data
 				this.logo = '.'; // Indicate progress
-				const response = await new mw.Api().get( {
+				const response = await new mw.Api( { userAgent: ProveIt.userAgent } ).get( {
 					action: 'templatedata',
 					titles: templateTitles.join( '|' ),
 					redirects: true,
@@ -316,7 +321,7 @@ window.ProveIt = {
 
 				// Get all the aliases of the templates
 				this.logo = '..'; // Indicate progress
-				const response2 = await new mw.Api().get( {
+				const response2 = await new mw.Api( { userAgent: ProveIt.userAgent } ).get( {
 					action: 'query',
 					titles: templateTitles.join( '|' ),
 					prop: 'redirects',
@@ -825,7 +830,7 @@ window.ProveIt = {
 
 			// @todo Improve
 			async onWikiPageNameInput( value, field ) {
-				const response = await new mw.Api().get( {
+				const response = await new mw.Api( { userAgent: ProveIt.userAgent } ).get( {
 					action: 'opensearch',
 					search: value,
 					limit: 5,
@@ -868,10 +873,12 @@ window.ProveIt = {
 						for ( const field of this.form.templateFields ) {
 							if ( field.name === 'archive-url' || field.name === aliases[ 'archive-url' ] ) {
 								field.value = url;
+								field.visible = true;
 								this.onTemplateFieldChange( field );
 							}
 							if ( field.name === 'archive-date' || field.name === aliases[ 'archive-date' ] ) {
 								field.value = date;
+								field.visible = true;
 								this.onTemplateFieldChange( field );
 							}
 						}
