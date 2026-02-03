@@ -101,7 +101,7 @@ window.ProveIt = {
 	/**
 	 * User-Agent for API calls
 	 */
-	userAgent: 'ProveIt/3.0',
+	userAgent: 'ProveIt/3.0 (https://www.mediawiki.org/wiki/ProveIt)',
 	
 	/**
 	 * Initialization script
