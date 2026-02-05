@@ -56,7 +56,7 @@
 	"proveit-archive-button": "Arxiv",
 	"proveit-archive-tooltip": "Wayback Machine-dən ən son arxivləşdirilmiş URL-i əldə et",
 	"proveit-archive-fetching": "Alınır...",
-	"proveit-archive-success": "Zəhmət olmasa, istifadə etməzdən əvvəl arxivləşdirilmiş URL-i sınayın: $1",
+	"proveit-archive-success": "Hazırdır! Yadda saxlamazdan əvvəl arxivləşdirilmiş URL-i yoxlamağı unutmayın.",
 	"proveit-archive-not-found": "Arxivləşdirilmiş URL tapılmadı",
 	"proveit-archive-error": "Wayback Machine-ə daxil olma xətası",
 	"proveit-today-button": "Bu gün",

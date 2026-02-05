@@ -58,7 +58,7 @@
 	"proveit-archive-button": "Archiwum",
 	"proveit-archive-tooltip": "Pobierz najnowszy zarchiwizowany adres URL z Wayback Machine",
 	"proveit-archive-fetching": "Pobieranie...",
-	"proveit-archive-success": "Proszę przetestować zarchiwizowany adres URL przed jego użyciem: $1",
+	"proveit-archive-success": "Proszę przetestować zarchiwizowany adres URL przed jego użyciem: $1, data archiwizacji: $2",
 	"proveit-archive-not-found": "Nie znaleziono zarchiwizowanego adresu URL",
 	"proveit-archive-error": "Błąd dostępu do Wayback Machine",
 	"proveit-today-button": "Dzisiaj",

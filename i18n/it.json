@@ -57,7 +57,7 @@
 	"proveit-archive-button": "Archivio",
 	"proveit-archive-tooltip": "Ottieni l'ultimo URL archiviato dalla Wayback Machine",
 	"proveit-archive-fetching": "Recupero...",
-	"proveit-archive-success": "Per favore prova l'URL archiviato prima di usarlo: $1",
+	"proveit-archive-success": "Fatto! Ricordati di testare l'URL archiviato prima di salvarlo.",
 	"proveit-archive-not-found": "Non è stato trovato alcun URL archiviato",
 	"proveit-archive-error": "Errore durante l'accesso alla Wayback Machine",
 	"proveit-today-button": "Oggi",
