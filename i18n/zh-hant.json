@@ -3,6 +3,7 @@
 		"authors": [
 			"Diskdance",
 			"Kly",
+			"LowensteinYang",
 			"Tranve",
 			"沈澄心"
 		]
@@ -53,7 +54,7 @@
 	"proveit-archive-button": "存檔",
 	"proveit-archive-tooltip": "從 Wayback Machine 取得最新的存檔 URL",
 	"proveit-archive-fetching": "正在取得…",
-	"proveit-archive-success": "請在使用之前測試已存檔 URL：$1",
+	"proveit-archive-success": "完成！在存檔之前請記得要測試已歸檔的URL。",
 	"proveit-archive-not-found": "未找到存檔 URL",
 	"proveit-archive-error": "存取 Wayback Machine 時發生出錯",
 	"proveit-today-button": "今日",

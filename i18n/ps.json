@@ -52,7 +52,7 @@
 	"proveit-archive-button": "خونديځ",
 	"proveit-archive-tooltip": "له وی‌بک ماشين څخه تازه خونديځ‌شوی وېبتړ ترلاسه‌کول",
 	"proveit-archive-fetching": "راوړل...",
-	"proveit-archive-success": "مهرباني وکړئ خونديځ‌شوی وېبتړ له کارولو مخکې وازمايئ: $1",
+	"proveit-archive-success": "وشو! په ياد ولرئ چې له خوندي‌کولو دمخه خونديځ‌شوی وېبتړ وازمايئ: $1",
 	"proveit-archive-not-found": "هېڅ خونديځ‌شوی وېبتړ ونه موندل شو",
 	"proveit-archive-error": "وی‌بک ماشين ته د لاسرسي پرمهال تېروتنه",
 	"proveit-today-button": "نن",
