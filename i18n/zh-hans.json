@@ -64,7 +64,7 @@
 	"proveit-archive-button": "存档",
 	"proveit-archive-tooltip": "从 Wayback Machine 获取最新的存档链接",
 	"proveit-archive-fetching": "正在获取...",
-	"proveit-archive-success": "请在使用之前测试存档链接：$1",
+	"proveit-archive-success": "完成！在保存之前请记得测试所存档的 URL。",
 	"proveit-archive-not-found": "未找到存档 URL",
 	"proveit-archive-error": "访问 Wayback Machine 时出错",
 	"proveit-today-button": "今天",
