@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Jopparn",
+			"Sabelöga",
 			"Stefan2255",
 			"WikiPhoenix"
 		]
@@ -52,7 +53,7 @@
 	"proveit-archive-button": "Arkiv",
 	"proveit-archive-tooltip": "Hämta den senaste arkiverade URL:en från Wayback Machine",
 	"proveit-archive-fetching": "Hämtar...",
-	"proveit-archive-success": "Testa den arkiverade URL:en innan du använder den: $1",
+	"proveit-archive-success": "Klart! Kom ihåg att testa den arkiverade URL:en innan du sparar den.",
 	"proveit-archive-not-found": "Ingen arkiverad URL hittades",
 	"proveit-archive-error": "Fel vid åtkomst till Wayback Machine",
 	"proveit-today-button": "Idag",
