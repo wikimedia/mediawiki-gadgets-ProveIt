@@ -3,6 +3,7 @@
 		"authors": [
 			"Bisang",
 			"Suleiman the Magnificent Television",
+			"Tensama0415",
 			"YeBoy371",
 			"Ykhwong",
 			"그냥기여자"
@@ -21,6 +22,7 @@
 	"proveit-filter-fields": "필터 필드",
 	"proveit-filter-list": "필터 목록",
 	"proveit-insert-button": "넣기",
+	"proveit-insert-tooltip": "문서에 삽입",
 	"proveit-no-references": "각주를 찾을 수 없습니다",
 	"proveit-normalize-button": "모두 평문화",
 	"proveit-reference-name-label": "각주 이름",
