@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Bisang",
+			"Namoroka",
 			"Suleiman the Magnificent Television",
 			"Tensama0415",
 			"YeBoy371",
@@ -53,7 +54,7 @@
 	"proveit-remove-confirm": "이렇게 하면 이 각주에 대한 모든 재사용 및 하위 각주도 제거됩니다. 괜찮습니까?",
 	"proveit-show-all-button": "모두 보기",
 	"proveit-show-all-tooltip": "모든 필드 표시",
-	"proveit-archive-button": "아카이브",
+	"proveit-archive-button": "보존",
 	"proveit-archive-tooltip": "웨이백 머신에서 가장 최신의 보존된 URL를 가져오기",
 	"proveit-archive-fetching": "가져오는 중...",
 	"proveit-archive-success": "완료! 저장하기 전에 보존된 URL을 테스트하는 것을 잊지 마세요.",
