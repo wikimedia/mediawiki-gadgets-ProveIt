@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Bencemac",
+			"Koko1998",
 			"Urbalazs"
 		]
 	},
@@ -10,9 +11,9 @@
 	"proveit-no-references": "Nem találhatók hivatkozások",
 	"proveit-reference-name-label": "Hivatkozás neve",
 	"proveit-reference-content-label": "Hivatkozás tartalma",
-	"proveit-template-label": "Fő sablon",
+	"proveit-template-label": "Sablon",
 	"proveit-remove-button": "Eltávolítás",
-	"proveit-show-all-button": "Az összes mező megjelenítése",
+	"proveit-show-all-button": "Összes megjelenítése",
 	"proveit-today-button": "Ma",
 	"proveit-update-button": "Frissítés"
 }
