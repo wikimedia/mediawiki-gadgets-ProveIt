@@ -8,6 +8,7 @@
 			"Darafsh",
 			"FarsiNevis",
 			"GMozafarian",
+			"LProfo",
 			"Mohammad ebz",
 			"Yoosef Pooranvary"
 		]
@@ -22,7 +23,7 @@
 	"proveit-previous-tooltip": "به مرجع قبلی بروید",
 	"proveit-next-button": "بعدی",
 	"proveit-next-tooltip": "به مرجع بعدی بروید",
-	"proveit-reuse-button": "استفاده مجدد",
+	"proveit-reuse-button": "بازاستفاده",
 	"proveit-filter-fields": "فیلتر فیلدها",
 	"proveit-filter-list": "پالایش فهرست",
 	"proveit-insert-button": "درج",
@@ -40,7 +41,7 @@
 	"proveit-template-select": "انتخاب یک الگو",
 	"proveit-remove-button": "حذف",
 	"proveit-remove-tooltip": "حذف از صفحه",
-	"proveit-remove-confirm": "این کار همچنین تمام استفاده‌های مجدد و ارجاع‌های فرعی این مرجع را نیز حذف می‌کند. تایید؟",
+	"proveit-remove-confirm": "این کار همچنین همهٔ بازاستفاده‌ها و ارجاع‌های فرعی این مرجع را حذف می‌کند. تایید می‌کنید؟",
 	"proveit-show-all-button": "نمایش همه",
 	"proveit-archive-button": "بایگانی",
 	"proveit-archive-tooltip": "آخرین URL بایگانی شده را از Wayback Machine دریافت کن",
