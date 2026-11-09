@@ -55,7 +55,7 @@
 	"proveit-archive-button": "الأرشيف",
 	"proveit-archive-tooltip": "احصل على أحدث عنوان URL المؤرشف من Wayback Machine",
 	"proveit-archive-fetching": "جارٍ الجلب...",
-	"proveit-archive-success": "يرجى اختبار عنوان URL المؤرشف قبل استخدامه: $1",
+	"proveit-archive-success": "تم! تذكر اختبار رابط الأرشيف قبل الحفظ.",
 	"proveit-archive-not-found": "لم يُعثَر على مسار مؤرشف",
 	"proveit-archive-error": "خطأ في الوصول إلى Wayback Machine",
 	"proveit-today-button": "اليوم",
